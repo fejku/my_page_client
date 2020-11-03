@@ -10,6 +10,7 @@ const PrivateRoute: React.FC<Props> = ({ component: Component, roles, ...rest })
   const { isAuthenticated, user } = useContext(AuthContext);
 
   if (!Component) return null;
+  
   return (
     <Route {...rest} render={props => {
 

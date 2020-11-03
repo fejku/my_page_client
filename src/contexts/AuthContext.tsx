@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import IUser from "../interfaces/IUser";
-import AuthService from "../Services/AuthService";
+import AuthService from "../services/AuthService";
 
 interface IAuth {
   user: IUser;
@@ -17,18 +17,30 @@ const AuthProvider: React.FC = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    AuthService.isAuthenticated().then(data => {
+    getContextData();
+  }, []);
+
+  const getContextData = async () => {
+    try {
+      const data = await AuthService.isAuthenticated();  
       setUser(data.user);
       setIsAuthenticated(data.isAuthenticated);
       setIsLoaded(true);
-    })
-  }, []);
-
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
   return (
     <div>
       {!isLoaded ? 
         <h1>Loading</h1> : 
-        <AuthContext.Provider value={{user, setUser, isAuthenticated, setIsAuthenticated}}>
+        <AuthContext.Provider value={{
+          user, 
+          setUser, 
+          isAuthenticated, 
+          setIsAuthenticated
+        }}>
           {children}
         </AuthContext.Provider>
       }
