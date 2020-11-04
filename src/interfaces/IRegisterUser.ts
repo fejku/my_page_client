@@ -1,8 +1,7 @@
-interface IUser {
-  _id: string;
+interface IRegisterUser {
   username: string;
   password: string;
   role: string;
 }
 
-export default IUser;
+export default IRegisterUser;

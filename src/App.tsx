@@ -7,16 +7,14 @@ import Register from "./components/Register";
 import PrivateRoute from "./hocs/PrivateRoute";
 import UnPrivateRoute from "./hocs/UnPrivateRoute";
 
-interface Props {
-  
-};
+interface Props {}
 
 const App: React.FC<Props> = (props) => {
   return (
     <BrowserRouter>
       <Navbar />
       <Route exact path="/" component={Home} />
-      <UnPrivateRoute path="/login" component={Login} />
+      {/* <UnPrivateRoute path="/login" component={Login} /> */}
       <UnPrivateRoute path="/register" component={Register} />
       {/*<PrivateRoute path="/todos" roles={["user", "admin"]} component={Todos} />
       <PrivateRoute path="/admin" roles={["admin"]} component={Admin} /> */}
