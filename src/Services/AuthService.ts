@@ -1,3 +1,6 @@
+import IRegisterResponse from "../interfaces/IRegisterResponse";
+import IRegisterResult from "../interfaces/IRegisterResult";
+import IRegisterUser from "../interfaces/IRegisterUser";
 import IUser from "../interfaces/IUser";
 
 class AuthService {
@@ -14,17 +17,19 @@ class AuthService {
       const data = await response.json();
       return data;
     } else {
-      return { 
-        isAuthenticated: false, 
-        user: { 
-          username: "", 
-          role: "" 
-        } 
+      return {
+        isAuthenticated: false,
+        user: {
+          username: "",
+          role: "",
+        },
       };
     }
   };
 
-  public static register = async (user: any) => {
+  public static register = async (
+    user: IRegisterUser
+  ): Promise<IRegisterResult> => {
     const response = await fetch("/auth/register", {
       method: "POST",
       body: JSON.stringify(user),
@@ -32,15 +37,20 @@ class AuthService {
         "Content-Type": "application/json",
       },
     });
-    const data = response.json();
-    return data;
-  } 
-  
+    const data: IRegisterResponse = await response.json();
+
+    if (response.status === 201) {
+      return { success: true, message: data.message };
+    } else {
+      return { success: false, message: data.message };
+    }
+  };
+
   public static logout = async () => {
     const response = await fetch("/auth/logout");
     const data = await response.json();
     return data;
-  }
+  };
 
   public static isAuthenticated = async () => {
     const response = await fetch("/auth/authenticated");
@@ -48,15 +58,15 @@ class AuthService {
       const data = await response.json();
       return data;
     } else {
-      return { 
-        isAuthenticated: false, 
-        user: { 
-          username: "", 
-          role: "" 
-        } 
+      return {
+        isAuthenticated: false,
+        user: {
+          username: "",
+          role: "",
+        },
       };
     }
-  }
+  };
 }
 
 export default AuthService;
