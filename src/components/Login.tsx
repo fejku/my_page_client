@@ -2,33 +2,38 @@ import React, { useContext, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import AuthService from "../services/AuthService";
-// import Message from "./Message";
+import Message from "./Message";
 
 interface Props extends RouteComponentProps {}
 
 const Login: React.FC<Props> = ({ history }) => {
-  const [user, setUser] = useState({ username: "", password: "" });
-  // const [message, setMessage] = useState<any>(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const authContext = useContext(AuthContext);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // const data = await AuthService.login(user);
+    const loginResponse = await AuthService.login({ username, password });
 
-    // const { isAuthenticated, user, message } = data;
-    // if (isAuthenticated) {
-    //   authContext.setUser(user);
-    //   authContext.setIsAuthenticated(isAuthenticated);
-    //   history.push("/todos");
-    // } else {
-    //   // setMessage(message);
-    // }
+    const { isAuthenticated, user } = loginResponse;
+    if (isAuthenticated) {
+      authContext.setUser(user!);
+      authContext.setIsAuthenticated(isAuthenticated);
+      history.push("/todos");
+    } else {
+      setMessage("Błąd logowania.");
+    }
   };
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({ ...user, [event.target.name]: event.target.value });
+  const onChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  };
+
+  const onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
   };
 
   return (
@@ -39,7 +44,8 @@ const Login: React.FC<Props> = ({ history }) => {
         <input
           type="text"
           name="username"
-          onChange={onChange}
+          value={username}
+          onChange={onChangeUsername}
           placeholder="Enter username"
         />
 
@@ -47,12 +53,13 @@ const Login: React.FC<Props> = ({ history }) => {
         <input
           type="text"
           name="password"
-          onChange={onChange}
+          value={password}
+          onChange={onChangePassword}
           placeholder="Enter password"
         />
 
         <button type="submit">Log in</button>
-        {/* {message && <Message message={message}/>} */}
+        {message && <Message message={message} />}
       </form>
     </div>
   );

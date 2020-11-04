@@ -14,7 +14,7 @@ const App: React.FC<Props> = (props) => {
     <BrowserRouter>
       <Navbar />
       <Route exact path="/" component={Home} />
-      {/* <UnPrivateRoute path="/login" component={Login} /> */}
+      <UnPrivateRoute path="/login" component={Login} />
       <UnPrivateRoute path="/register" component={Register} />
       {/*<PrivateRoute path="/todos" roles={["user", "admin"]} component={Todos} />
       <PrivateRoute path="/admin" roles={["admin"]} component={Admin} /> */}

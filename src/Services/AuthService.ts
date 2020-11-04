@@ -1,10 +1,12 @@
+import ILoginResponse from "../interfaces/ILoginResponse";
+import ILoginResult from "../interfaces/ILoginResult";
+import ILoginUser from "../interfaces/ILoginUser";
 import IRegisterResponse from "../interfaces/IRegisterResponse";
 import IRegisterResult from "../interfaces/IRegisterResult";
 import IRegisterUser from "../interfaces/IRegisterUser";
-import IUser from "../interfaces/IUser";
 
 class AuthService {
-  public static login = async (user: IUser) => {
+  public static login = async (user: ILoginUser): Promise<ILoginResult> => {
     const response = await fetch("/auth/login", {
       method: "POST",
       body: JSON.stringify(user),
@@ -14,16 +16,10 @@ class AuthService {
     });
 
     if (response.status !== 401) {
-      const data = await response.json();
+      const data: ILoginResponse = await response.json();
       return data;
     } else {
-      return {
-        isAuthenticated: false,
-        user: {
-          username: "",
-          role: "",
-        },
-      };
+      return { isAuthenticated: false };
     }
   };
 
