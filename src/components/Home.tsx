@@ -1,15 +1,9 @@
 import React from "react";
 
-interface Props {
-  
-};
+interface Props {}
 
 const Home: React.FC<Props> = (props) => {
-  return (
-    <div>
-      Home
-    </div>
-  );
+  return <div className="home">Home</div>;
 };
 
 export default Home;

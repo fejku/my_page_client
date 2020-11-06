@@ -1,28 +1,26 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
-import AuthService from "../services/AuthService";
+import { AuthContext } from "../../contexts/AuthContext";
+import AuthService from "../../services/AuthService";
 
-interface Props {
-  
-};
+interface Props {}
 
 const Navbar: React.FC<Props> = (props) => {
-  const {isAuthenticated, setIsAuthenticated, user, setUser} = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, user, setUser } = useContext(
+    AuthContext
+  );
 
   const onClickLogout = async () => {
     try {
-      const data = await AuthService.logout();  
+      const data = await AuthService.logout();
 
       if (data.success) {
         setUser(data.user);
         setIsAuthenticated(false);
-      }      
-    } catch (error) {
-      
-    }
-  }
-  
+      }
+    } catch (error) {}
+  };
+
   const unauthenticatedNavbar = () => {
     return (
       <>
@@ -34,10 +32,10 @@ const Navbar: React.FC<Props> = (props) => {
         </Link>
         <Link to="/register">
           <li>Register</li>
-        </Link>                
+        </Link>
       </>
-    )
-  }
+    );
+  };
 
   const authenticatedNavBar = () => {
     return (
@@ -48,17 +46,17 @@ const Navbar: React.FC<Props> = (props) => {
         <Link to="/todos">
           <li>Todos</li>
         </Link>
-        { (user.role === "admin") &&        
+        {user.role === "admin" && (
           <Link to="/admin">
             <li>Admin</li>
-          </Link>   
-        }
+          </Link>
+        )}
         <button type="button" onClick={onClickLogout}>
           Logout
-        </button>             
+        </button>
       </>
-    )    
-  }
+    );
+  };
 
   return (
     <nav>
