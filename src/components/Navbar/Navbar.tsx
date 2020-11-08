@@ -1,7 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import AuthService from "../../services/AuthService";
+import LogoIcon from "../Icons/LogoIcon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import classes from "./Navbar.module.css";
 
 interface Props {}
 
@@ -9,6 +13,12 @@ const Navbar: React.FC<Props> = (props) => {
   const { isAuthenticated, setIsAuthenticated, user, setUser } = useContext(
     AuthContext
   );
+
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const onMobileMenuClick = () => {
+    setOpenMenu((state) => !state);
+  };
 
   const onClickLogout = async () => {
     try {
@@ -24,15 +34,12 @@ const Navbar: React.FC<Props> = (props) => {
   const unauthenticatedNavbar = () => {
     return (
       <>
-        <Link to="/">
-          <li>Home</li>
-        </Link>
-        <Link to="/login">
-          <li>Login</li>
-        </Link>
-        <Link to="/register">
-          <li>Register</li>
-        </Link>
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+        <li>
+          <Link to="/register">Register</Link>
+        </li>
       </>
     );
   };
@@ -40,16 +47,10 @@ const Navbar: React.FC<Props> = (props) => {
   const authenticatedNavBar = () => {
     return (
       <>
-        <Link to="/">
-          <li>Home</li>
-        </Link>
-        <Link to="/todos">
-          <li>Todos</li>
-        </Link>
         {user.role === "admin" && (
-          <Link to="/admin">
-            <li>Admin</li>
-          </Link>
+          <li>
+            <Link to="/admin">Admin</Link>
+          </li>
         )}
         <button type="button" onClick={onClickLogout}>
           Logout
@@ -59,12 +60,30 @@ const Navbar: React.FC<Props> = (props) => {
   };
 
   return (
-    <nav>
+    <nav className={classes.Navbar}>
       <Link to="/">
-        <div>Krystian</div>
+        <LogoIcon className={classes.LogoIcon} />
       </Link>
-      <div>
-        <ul>
+      <div className={classes.MenuIcon} onClick={onMobileMenuClick}>
+        {openMenu ? (
+          <FontAwesomeIcon icon={faTimes} />
+        ) : (
+          <FontAwesomeIcon icon={faBars} />
+        )}
+        {/* <i className={openMenu ? "fas fa-times" : "fas fa-bars"} /> */}
+      </div>
+      <div className={classes.Menu}>
+        <ul
+          className={`${classes.MenuList} ${
+            openMenu && classes.MenuListActive
+          }`}
+        >
+          <li>
+            <Link to="/apps">Apps</Link>
+          </li>
+          <li>
+            <Link to="/games">Games</Link>
+          </li>
           {!isAuthenticated ? unauthenticatedNavbar() : authenticatedNavBar()}
         </ul>
       </div>

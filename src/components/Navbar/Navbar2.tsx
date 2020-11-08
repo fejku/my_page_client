@@ -1,5 +1,8 @@
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import LogoIcon from "../Icons/LogoIcon";
 import Button from "./Button";
 import Dropdown from "./Dropdown";
 import "./Navbar2.css";
@@ -37,19 +40,22 @@ const Navbar2 = (props: Props) => {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-logo">
-        Epic
-        <i className="fab fa-firstdraft" />
+        <LogoIcon />
       </Link>
       <div className="menu-icon" onClick={handleClick}>
-        <i className={click ? "fas fa-times" : "fas fa-bars"} />
+        {click ? (
+          <FontAwesomeIcon icon={faTimes} />
+        ) : (
+          <FontAwesomeIcon icon={faBars} />
+        )}
       </div>
       <ul className={click ? "nav-menu active" : "nav-menu"}>
         <li className="nav-item">
           <Link to="/" className="nav-links" onClick={closeMobileMenu}>
-            Home
+            Apps
           </Link>
         </li>
-        <li
+        {/* <li
           className="nav-item"
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
@@ -58,14 +64,14 @@ const Navbar2 = (props: Props) => {
             Services <i className="fas fa-caret-down" />
           </Link>
           {dropdown && <Dropdown />}
-        </li>
+        </li> */}
         <li className="nav-item">
           <Link
             to="/contact-us"
             className="nav-links"
             onClick={closeMobileMenu}
           >
-            Contact us
+            Games
           </Link>
         </li>
         <li className="nav-item">

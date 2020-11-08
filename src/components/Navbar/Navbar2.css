@@ -8,12 +8,13 @@
 }
 
 .navbar-logo {
-  color: #fff;
+  /* color: #fff;
   justify-self: start;
   margin-left: 20px;
   cursor: pointer;
   text-decoration: none;
-  font-size: 2rem;
+  font-size: 2rem; */
+  fill: #fff;
 }
 
 .fa-firstdraft {
