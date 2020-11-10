@@ -20,6 +20,10 @@ const Navbar: React.FC<Props> = (props) => {
     setOpenMenu((state) => !state);
   };
 
+  const onCloseMenuClick = () => {
+    setOpenMenu(false);
+  };
+
   const onClickLogout = async () => {
     try {
       const data = await AuthService.logout();
@@ -83,10 +87,14 @@ const Navbar: React.FC<Props> = (props) => {
           }`}
         >
           <li>
-            <Link to="/apps">Apps</Link>
+            <Link to="/apps" onClick={onCloseMenuClick}>
+              Apps
+            </Link>
           </li>
           <li>
-            <Link to="/games">Games</Link>
+            <Link to="/games" onClick={onCloseMenuClick}>
+              Games
+            </Link>
           </li>
           {!isAuthenticated ? unauthenticatedNavbar() : authenticatedNavBar()}
         </ul>

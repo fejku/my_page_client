@@ -84,9 +84,19 @@
     height: 100%;
     display: flex;
     justify-content: center;
+    font-size: 1.8rem;
+    border-bottom: 1px solid #100909;
   }
 
-  .MenuList li:hover {
-    background: #464444;
+  .MenuList li a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Menu li a:hover {
+    border-radius: 0;
   }
 }
