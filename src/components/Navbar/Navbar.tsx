@@ -61,21 +61,25 @@ const Navbar: React.FC<Props> = (props) => {
 
   return (
     <nav className={classes.Navbar}>
-      <Link to="/">
-        <LogoIcon className={classes.LogoIcon} />
+      <Link to="/" className={classes.LogoIcon}>
+        <LogoIcon />
       </Link>
-      <div className={classes.MenuIcon} onClick={onMobileMenuClick}>
+      <div
+        className={`${classes.MenuIcon} ${
+          openMenu ? classes.MenuIconActive : ""
+        }`}
+        onClick={onMobileMenuClick}
+      >
         {openMenu ? (
           <FontAwesomeIcon icon={faTimes} />
         ) : (
           <FontAwesomeIcon icon={faBars} />
         )}
-        {/* <i className={openMenu ? "fas fa-times" : "fas fa-bars"} /> */}
       </div>
       <div className={classes.Menu}>
         <ul
           className={`${classes.MenuList} ${
-            openMenu && classes.MenuListActive
+            openMenu ? classes.MenuListActive : ""
           }`}
         >
           <li>
