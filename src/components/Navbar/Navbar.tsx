@@ -6,6 +6,7 @@ import LogoIcon from "../Icons/LogoIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import classes from "./Navbar.module.css";
+import { Menu, MenuItem } from "@material-ui/core";
 
 interface Props {}
 
@@ -15,16 +16,25 @@ const Navbar: React.FC<Props> = (props) => {
   );
 
   const [openMenu, setOpenMenu] = useState(false);
+  const [
+    anchorProfileEl,
+    setAnchorProfileEl,
+  ] = React.useState<null | HTMLElement>(null);
 
   const onMobileMenuClick = () => {
     setOpenMenu((state) => !state);
   };
 
-  const onCloseMenuClick = () => {
-    setOpenMenu(false);
+  const onProfileClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorProfileEl(event.currentTarget);
+  };
+
+  const onProfileClose = () => {
+    setAnchorProfileEl(null);
   };
 
   const onClickLogout = async () => {
+    setAnchorProfileEl(null);
     try {
       const data = await AuthService.logout();
 
@@ -39,10 +49,10 @@ const Navbar: React.FC<Props> = (props) => {
     return (
       <>
         <li>
-          <Link to="/login">Login</Link>
+          <Link to="/register">Register</Link>
         </li>
         <li>
-          <Link to="/register">Register</Link>
+          <Link to="/login">Login</Link>
         </li>
       </>
     );
@@ -56,9 +66,20 @@ const Navbar: React.FC<Props> = (props) => {
             <Link to="/admin">Admin</Link>
           </li>
         )}
-        <button type="button" onClick={onClickLogout}>
-          Logout
-        </button>
+        <li className={classes.AvatarItem}>
+          <div className={classes.Avatar} onClick={onProfileClick}>
+            {user.username.charAt(0).toUpperCase()}
+          </div>
+        </li>
+        <Menu
+          anchorEl={anchorProfileEl}
+          keepMounted
+          open={Boolean(anchorProfileEl)}
+          onClose={onProfileClose}
+        >
+          <MenuItem onClick={onProfileClose}>Profile</MenuItem>
+          <MenuItem onClick={onClickLogout}>Logout</MenuItem>
+        </Menu>
       </>
     );
   };
@@ -87,15 +108,13 @@ const Navbar: React.FC<Props> = (props) => {
           }`}
         >
           <li>
-            <Link to="/apps" onClick={onCloseMenuClick}>
-              Apps
-            </Link>
+            <Link to="/apps">Apps</Link>
           </li>
+
           <li>
-            <Link to="/games" onClick={onCloseMenuClick}>
-              Games
-            </Link>
+            <Link to="/games">Games</Link>
           </li>
+          <li className={classes.MenuItemSpace} />
           {!isAuthenticated ? unauthenticatedNavbar() : authenticatedNavBar()}
         </ul>
       </div>

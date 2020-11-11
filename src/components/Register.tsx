@@ -2,14 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import AuthService from "../services/AuthService";
 import Message from "./Message";
-// import Message from "./Message";
 
 interface Props extends RouteComponentProps {}
 
 const Register: React.FC<Props> = ({ history }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const [message, setMessage] = useState("");
 
   let timerID = useRef<any>(null);
@@ -23,7 +21,6 @@ const Register: React.FC<Props> = ({ history }) => {
   const resetForm = () => {
     setUsername("");
     setPassword("");
-    setRole("");
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +29,7 @@ const Register: React.FC<Props> = ({ history }) => {
     const registerResult = await AuthService.register({
       username,
       password,
-      role,
+      role: "user",
     });
 
     setMessage(registerResult.message);
@@ -51,10 +48,6 @@ const Register: React.FC<Props> = ({ history }) => {
 
   const onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-  };
-
-  const onChangeRole = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRole(event.target.value);
   };
 
   return (
@@ -77,15 +70,6 @@ const Register: React.FC<Props> = ({ history }) => {
           value={password}
           onChange={onChangePassword}
           placeholder="Enter password"
-        />
-
-        <label htmlFor="role">Role: </label>
-        <input
-          type="text"
-          name="role"
-          value={role}
-          onChange={onChangeRole}
-          placeholder="Enter role"
         />
 
         <button type="submit">Register</button>
