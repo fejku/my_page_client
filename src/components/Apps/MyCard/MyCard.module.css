@@ -1,0 +1,13 @@
+.card {
+  margin: 12px;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.media {
+  height: 0;
+  padding-top: 56.25%;
+}

@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import clsx from "clsx";
 import { AuthContext } from "../../contexts/AuthContext";
 import LogoIcon from "../Icons/LogoIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,9 +26,9 @@ const Navbar: React.FC<Props> = (props) => {
         <LogoIcon />
       </Link>
       <div
-        className={`${classes.MenuIcon} ${
-          openMenu ? classes.MenuIconActive : ""
-        }`}
+        className={clsx(classes.MenuIcon, {
+          [classes.MenuIconActive]: openMenu,
+        })}
         onClick={onMobileMenuClick}
       >
         {openMenu ? (
@@ -38,9 +39,9 @@ const Navbar: React.FC<Props> = (props) => {
       </div>
       <div className={classes.Menu}>
         <ul
-          className={`${classes.MenuList} ${
-            openMenu ? classes.MenuListActive : ""
-          }`}
+          className={clsx(classes.MenuList, {
+            [classes.MenuListActive]: openMenu,
+          })}
         >
           <li>
             <Link to="/apps">Apps</Link>
