@@ -13,7 +13,7 @@ const MyCard: React.FC<Props> = ({ app }) => {
   return (
     <Card className={classes.card}>
       <Link to={`${url}/${app.link}`} className={classes.link}>
-        <CardHeader className={classes.header} title={app.tytul} />
+        <CardHeader title={app.tytul} disableTypography />
         <CardMedia className={classes.media} image={app.image} />
       </Link>
     </Card>
