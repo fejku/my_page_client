@@ -19,11 +19,6 @@ const AppsRoutes = (props: Props) => {
           component={Posilki}
         />
       ))}
-      <PrivateRoute
-        path={`${path}/posilki`}
-        roles={["user", "admin"]}
-        component={Posilki}
-      />
     </>
   );
 };
