@@ -1,17 +1,25 @@
 import React, { useContext, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory, useLocation } from "react-router";
 import { AuthContext } from "../contexts/AuthContext";
 import AuthService from "../services/AuthService";
 import Message from "./Message";
 
-interface Props extends RouteComponentProps {}
+interface ILocationState {
+  from: Location;
+}
 
-const Login: React.FC<Props> = ({ history }) => {
+interface Props {}
+
+const Login: React.FC<Props> = () => {
+  const authContext = useContext(AuthContext);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const authContext = useContext(AuthContext);
+  const history = useHistory();
+  const location = useLocation<ILocationState>();
+  const { from } = location.state || { from: { pathname: "/" } };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,7 +30,7 @@ const Login: React.FC<Props> = ({ history }) => {
     if (isAuthenticated) {
       authContext.setUser(user!);
       authContext.setIsAuthenticated(isAuthenticated);
-      history.push("/todos");
+      history.push(from);
     } else {
       setMessage("Błąd logowania.");
     }
