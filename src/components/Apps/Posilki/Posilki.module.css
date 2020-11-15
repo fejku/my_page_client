@@ -2,20 +2,3 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(345px, 1fr));
 }
-
-.card {
-  margin: 12px;
-}
-
-.PosilkiHeaderRoot {
-  padding: 4px 16px;
-}
-
-.PosilkiHeaderAction {
-  margin-top: 0;
-}
-
-.media {
-  height: 0;
-  padding-top: 56.25%;
-}

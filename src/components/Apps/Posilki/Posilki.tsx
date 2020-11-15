@@ -1,85 +1,28 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  Chip,
-  IconButton,
-  Typography,
-} from "@material-ui/core";
-import { StylesProvider } from "@material-ui/core/styles";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import React, { useEffect, useState } from "react";
+import IPosilek from "../../../interfaces/apps/posilki/IPosilek";
+import Posilek from "./Posilek/Posilek";
 import classes from "./Posilki.module.css";
 
 interface Props {}
 
 const Posilki = (props: Props) => {
+  const [posilki, setPosilki] = useState<IPosilek[]>([]);
+
+  useEffect(() => {
+    getPosilki();
+  }, []);
+
+  const getPosilki = async () => {
+    const response = await fetch("/apps/posilki");
+    const data = await response.json();
+    setPosilki(data);
+  };
+
   return (
     <div className={classes.Posilki}>
-      <StylesProvider injectFirst>
-        <Card className={classes.card}>
-          <CardHeader
-            title="Schabowy"
-            disableTypography
-            action={
-              <IconButton aria-label="settings">
-                <MoreVertIcon />
-              </IconButton>
-            }
-            classes={{
-              root: classes.PosilkiHeaderRoot,
-              action: classes.PosilkiHeaderAction,
-            }}
-          />
-          <CardMedia
-            className={classes.media}
-            image="https://material-ui.com/static/images/cards/paella.jpg"
-          />
-          <CardContent>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Qwerty za qwerty qwerty a qwerty qwerty a qwerty qwerty aa qwerty
-              qwerty qwerty g
-            </Typography>
-            <Chip label="Obiad" variant="outlined"></Chip>
-          </CardContent>
-        </Card>
-      </StylesProvider>
-      <Card className={classes.card}>
-        <CardHeader title="Schabowy2" />
-        <CardMedia
-          className={classes.media}
-          image="https://material-ui.com/static/images/cards/paella.jpg"
-        />
-      </Card>
-      <Card className={classes.card}>
-        <CardHeader title="Schabowy2" />
-        <CardMedia
-          className={classes.media}
-          image="https://material-ui.com/static/images/cards/paella.jpg"
-        />
-      </Card>
-      <Card className={classes.card}>
-        <CardHeader title="Schabowy2" />
-        <CardMedia
-          className={classes.media}
-          image="https://material-ui.com/static/images/cards/paella.jpg"
-        />
-      </Card>
-      <Card className={classes.card}>
-        <CardHeader title="Schabowy2" />
-        <CardMedia
-          className={classes.media}
-          image="https://material-ui.com/static/images/cards/paella.jpg"
-        />
-      </Card>
-      <Card className={classes.card}>
-        <CardHeader title="Schabowy2" />
-        <CardMedia
-          className={classes.media}
-          image="https://material-ui.com/static/images/cards/paella.jpg"
-        />
-      </Card>
+      {posilki.map((posilek) => (
+        <Posilek posilek={posilek} />
+      ))}
     </div>
   );
 };
