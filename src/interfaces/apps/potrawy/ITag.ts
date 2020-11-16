@@ -1,4 +1,5 @@
 interface ITag {
+  _id?: string;
   nazwa: String;
 }
 

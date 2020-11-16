@@ -1,6 +1,7 @@
 import ITag from "./ITag";
 
-interface IPosilek {
+interface IPotrawa {
+  _id?: string;
   nazwa: string;
   zdjecie: string;
   uwagi: string;
@@ -8,4 +9,4 @@ interface IPosilek {
   tagi: ITag[];
 }
 
-export default IPosilek;
+export default IPotrawa;

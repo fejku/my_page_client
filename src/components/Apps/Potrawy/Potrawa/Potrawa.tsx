@@ -11,14 +11,14 @@ import {
   Typography,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import IPosilek from "../../../../interfaces/apps/posilki/IPosilek";
-import classes from "./Posilek.module.css";
+import IPotrawa from "../../../../interfaces/apps/potrawy/IPotrawa";
+import classes from "./Potrawa.module.css";
 
 interface Props {
-  posilek: IPosilek;
+  potrawa: IPotrawa;
 }
 
-const Posilek: React.FC<Props> = ({ posilek }) => {
+const Potrawa: React.FC<Props> = ({ potrawa }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const onMoreClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -29,11 +29,15 @@ const Posilek: React.FC<Props> = ({ posilek }) => {
     setAnchorEl(null);
   };
 
+  const onEdytujClick = () => {};
+
+  const onUsunClick = () => {};
+
   return (
     <>
       <Card className={classes.card}>
         <CardHeader
-          title={posilek.nazwa}
+          title={potrawa.nazwa}
           disableTypography
           action={
             <IconButton onClick={onMoreClick}>
@@ -41,17 +45,17 @@ const Posilek: React.FC<Props> = ({ posilek }) => {
             </IconButton>
           }
           classes={{
-            root: classes.PosilkiHeaderRoot,
-            content: classes.PosilkiHeaderContent,
-            action: classes.PosilkiHeaderAction,
+            root: classes.PotrawaHeaderRoot,
+            content: classes.PotrawaHeaderContent,
+            action: classes.PotrawaHeaderAction,
           }}
         />
-        <CardMedia className={classes.media} image={posilek.zdjecie} />
+        <CardMedia className={classes.media} image={potrawa.zdjecie} />
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
-            {posilek.uwagi}
+            {potrawa.uwagi}
           </Typography>
-          {posilek.tagi.map((tag) => (
+          {potrawa.tagi.map((tag) => (
             <Chip label={tag.nazwa} variant="outlined" />
           ))}
         </CardContent>
@@ -62,11 +66,11 @@ const Posilek: React.FC<Props> = ({ posilek }) => {
         open={Boolean(anchorEl)}
         onClose={onMenuClose}
       >
-        <MenuItem>Edytuj</MenuItem>
-        <MenuItem>Usuń</MenuItem>
+        <MenuItem onClick={onEdytujClick}>Edytuj</MenuItem>
+        <MenuItem onClick={onUsunClick}>Usuń</MenuItem>
       </Menu>
     </>
   );
 };
 
-export default Posilek;
+export default Potrawa;
