@@ -1,0 +1,35 @@
+.root > * {
+  margin: 8px;
+}
+
+.dialog {
+  width: 500px;
+}
+
+.zdjecie {
+  height: 0;
+  padding-top: 56.25%;
+  /* border: `1px solid ${theme.palette.text.disabled}`; */
+}
+
+.zdjecieImg {
+  /* background-image: url("${zdjecieSrc}"); */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.brakZdjecia {
+  position: relative;
+}
+
+.brakZdjecia > svg {
+  font-size: 5rem;
+  position: absolute;
+  left: calc(50% - 2.5rem);
+  top: calc(50% - 2.5rem);
+}
+
+.actions > button {
+  /* color: theme.palette.primary.light, */
+}
