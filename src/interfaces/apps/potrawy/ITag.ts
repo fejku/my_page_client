@@ -1,6 +1,6 @@
 interface ITag {
   _id?: string;
-  nazwa: String;
+  nazwa: string;
 }
 
 export default ITag;

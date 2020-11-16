@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import {
   Button,
@@ -14,7 +14,7 @@ import DodajButton from "../../../Common/DodajButton/DodajButton";
 import IPotrawa from "../../../../interfaces/apps/potrawy/IPotrawa";
 import ITag from "../../../../interfaces/apps/potrawy/ITag";
 import EdytujPotraweHelper from "./EdytujPotraweHelper";
-import classes from "./EdytujPotrawe.module.css";
+import classes from "./EdytujPotrawe.module.scss";
 
 interface Props {
   setPotrawy: React.Dispatch<React.SetStateAction<IPotrawa[]>>;
@@ -29,6 +29,16 @@ const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
   const [tagi, setTagi] = useState<ITag[]>([]);
   const [wybraneTagi, setWybraneTagi] = useState<ITag[]>([]);
   const [linkDoPrzepisu, setLinkDoPrzepisu] = useState("");
+
+  useEffect(() => {
+    pobierzTagi();
+  }, []);
+
+  const pobierzTagi = async () => {
+    const response = await fetch("/apps/posilki/tagi");
+    const data = await response.json();
+    setTagi(data);
+  };
 
   const onDodajPotrawe = () => {
     setDodawaniePotrawy(true);
@@ -72,14 +82,12 @@ const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
           setWybraneTagi([...wybraneTagi, wyszukanyTag]);
         }
       } else {
-        const noweTagi = await EdytujPotraweHelper.dodajNowyTag(value);
+        const dodanyTag = await EdytujPotraweHelper.dodajNowyTag(value);
 
-        const dodanyTag = noweTagi.find((tag) => tag.nazwa === value);
         if (dodanyTag) {
-          console.log(wybraneTagi);
           setWybraneTagi((prevTagi) => [...prevTagi, dodanyTag]);
+          setTagi((prevTagi) => [...prevTagi, dodanyTag]);
         }
-        setTagi(noweTagi);
       }
     }
   };
@@ -136,6 +144,9 @@ const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
                 [classes.zdjecieImg]: pokazZdjecie,
                 [classes.brakZdjecia]: !pokazZdjecie,
               })}
+              style={{
+                backgroundImage: pokazZdjecie ? `url(${zdjecieSrc})` : "",
+              }}
             >
               {!pokazZdjecie && <PhotoCameraIcon />}
             </div>
@@ -147,7 +158,7 @@ const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
                 fullWidth
               />
             </div>
-            {/* <Autocomplete
+            <Autocomplete
               multiple
               limitTags={2}
               options={EdytujPotraweHelper.dajNieWybraneTagi(tagi, wybraneTagi)}
@@ -162,7 +173,7 @@ const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
                   onKeyDown={onTagiInputKeyDown}
                 />
               )}
-            /> */}
+            />
             <div>
               <TextField
                 label="Link do przepisu"

@@ -15,8 +15,8 @@ export default class EdytujPotraweHelper {
     });
   };
 
-  static dodajNowyTag = async (tagNazwa: string): Promise<ITag[]> => {
-    const response = await fetch("/apps/potagi", {
+  static dodajNowyTag = async (tagNazwa: string): Promise<ITag> => {
+    const response = await fetch("/apps/posilki/tagi", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
