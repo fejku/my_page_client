@@ -6,10 +6,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   TextField,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import DodajButton from "../../../Common/DodajButton/DodajButton";
 import IPotrawa from "../../../../interfaces/apps/potrawy/IPotrawa";
 import ITag from "../../../../interfaces/apps/potrawy/ITag";
@@ -163,6 +165,14 @@ const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
               limitTags={2}
               options={EdytujPotraweHelper.dajNieWybraneTagi(tagi, wybraneTagi)}
               getOptionLabel={(tag) => tag.nazwa}
+              renderOption={(option) => (
+                <span className={classes.asd}>
+                  <span className={classes.asd1}>{option.nazwa}</span>
+                  <IconButton size="small" edge="end">
+                    <DeleteForeverIcon />
+                  </IconButton>
+                </span>
+              )}
               value={wybraneTagi}
               onChange={onTagiChange}
               renderInput={(params) => (
