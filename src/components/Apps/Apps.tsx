@@ -9,7 +9,7 @@ const Apps: React.FC<Props> = (props) => {
   return (
     <div className={classes.Apps}>
       {appList.map((app) => (
-        <MyCard app={app} />
+        <MyCard key={app.link} app={app} />
       ))}
     </div>
   );

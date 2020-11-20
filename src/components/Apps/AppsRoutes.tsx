@@ -14,6 +14,7 @@ const AppsRoutes = (props: Props) => {
       <Route exact path={path} component={Apps} />
       {appList.map((app) => (
         <PrivateRoute
+          key={app.link}
           path={`${path}/${app.link}`}
           roles={["user", "admin"]}
           component={Potrawy}
