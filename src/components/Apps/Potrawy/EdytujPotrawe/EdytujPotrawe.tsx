@@ -20,10 +20,15 @@ import classes from "./EdytujPotrawe.module.scss";
 
 interface Props {
   setPotrawy: React.Dispatch<React.SetStateAction<IPotrawa[]>>;
+  dodawaniePotrawy: boolean;
+  setDodawaniePotrawy: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
-  const [dodawaniePotrawy, setDodawaniePotrawy] = useState(false);
+const EdytujPotrawe: React.FC<Props> = ({
+  setPotrawy,
+  dodawaniePotrawy,
+  setDodawaniePotrawy,
+}) => {
   const [nazwa, setNazwa] = useState("");
   const [zdjecieSrc, setZdjecieSrc] = useState("");
   const [pokazZdjecie, setPokazZdjecie] = useState(false);
@@ -104,17 +109,21 @@ const EdytujPotrawe: React.FC<Props> = ({ setPotrawy }) => {
     setDodawaniePotrawy(false);
   };
 
-  const onDodajClick = () => {
-    // const dodawanaPotrawa: Potrawa = {
-    //   nazwa,
-    //   zdjecie: zdjecieSrc,
-    //   uwagi,
-    //   tagi: wybraneTagi,
-    //   link: linkDoPrzepisu,
-    // };
-    // const nowePotrawy = await EditDishHelper.dodajPotrawe(dodawanaPotrawa);
-    // setPotrawy(nowePotrawy);
-    // setDodawanieWagi(false);
+  const onDodajClick = async () => {
+    const dodawanaPotrawa: IPotrawa = {
+      nazwa,
+      zdjecie: zdjecieSrc,
+      uwagi,
+      tagi: wybraneTagi,
+      link: linkDoPrzepisu,
+    };
+    const dodanaPotrawa = await EdytujPotraweHelper.dodajPotrawe(
+      dodawanaPotrawa
+    );
+    if (dodanaPotrawa) {
+      setPotrawy((potrawy) => [...potrawy, dodanaPotrawa]);
+      setDodawaniePotrawy(false);
+    }
   };
 
   return (

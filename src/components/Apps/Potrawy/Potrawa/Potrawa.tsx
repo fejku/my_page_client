@@ -16,9 +16,15 @@ import classes from "./Potrawa.module.css";
 
 interface Props {
   potrawa: IPotrawa;
+  setPotrawy: React.Dispatch<React.SetStateAction<IPotrawa[]>>;
+  setDodawaniePotrawy: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Potrawa: React.FC<Props> = ({ potrawa }) => {
+const Potrawa: React.FC<Props> = ({
+  potrawa,
+  setPotrawy,
+  setDodawaniePotrawy,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const onMoreClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -29,9 +35,22 @@ const Potrawa: React.FC<Props> = ({ potrawa }) => {
     setAnchorEl(null);
   };
 
-  const onEdytujClick = () => {};
+  const onEdytujClick = async () => {
+    setDodawaniePotrawy(true);
+  };
 
-  const onUsunClick = () => {};
+  const onUsunClick = async () => {
+    const response = await fetch(`/apps/posilki/potrawy/${potrawa._id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 200) {
+      setPotrawy((potrawy) => potrawy.filter((p) => p._id !== potrawa._id));
+      // return await response.json();
+    }
+  };
 
   return (
     <>
@@ -56,7 +75,7 @@ const Potrawa: React.FC<Props> = ({ potrawa }) => {
             {potrawa.uwagi}
           </Typography>
           {potrawa.tagi.map((tag) => (
-            <Chip label={tag.nazwa} variant="outlined" />
+            <Chip key={tag._id} label={tag.nazwa} variant="outlined" />
           ))}
         </CardContent>
       </Card>

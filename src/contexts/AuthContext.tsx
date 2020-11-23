@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+import { Backdrop, CircularProgress } from "@material-ui/core";
 import IUser from "../interfaces/IUser";
 import AuthService from "../services/AuthService";
 
@@ -34,7 +35,9 @@ const AuthProvider: React.FC = ({ children }) => {
   return (
     <>
       {!isLoaded ? (
-        <h1>Loading</h1>
+        <Backdrop open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       ) : (
         <AuthContext.Provider
           value={{

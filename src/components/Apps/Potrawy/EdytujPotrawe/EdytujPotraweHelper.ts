@@ -28,7 +28,7 @@ export default class EdytujPotraweHelper {
 
   static dodajPotrawe = async (
     dodawanaPotrawa: IPotrawa
-  ): Promise<IPotrawa[]> => {
+  ): Promise<IPotrawa> => {
     const response = await fetch("/apps/posilki/potrawy", {
       method: "POST",
       headers: {
