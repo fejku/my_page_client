@@ -6,14 +6,15 @@ import DodajButton from "../../../Common/DodajButton/DodajButton";
 import IPotrawa from "../../../../interfaces/apps/potrawy/IPotrawa";
 import ITag from "../../../../interfaces/apps/potrawy/ITag";
 import EdytujPotraweHelper from "./EdytujPotraweHelper";
-import classes from "./EdytujPotrawe.module.scss";
 import Tagi from "../Tagi/Tagi";
+import classes from "./EdytujPotrawe.module.scss";
 
 interface Props {
   setPotrawy: React.Dispatch<React.SetStateAction<IPotrawa[]>>;
   tagiState: [ITag[], React.Dispatch<React.SetStateAction<ITag[]>>];
   dodawaniePotrawy: boolean;
   setDodawaniePotrawy: React.Dispatch<React.SetStateAction<boolean>>;
+  edytowanaPotrawa: IPotrawa | undefined;
 }
 
 const EdytujPotrawe: React.FC<Props> = ({
@@ -21,6 +22,7 @@ const EdytujPotrawe: React.FC<Props> = ({
   tagiState: [tagi, setTagi],
   dodawaniePotrawy,
   setDodawaniePotrawy,
+  edytowanaPotrawa,
 }) => {
   const [nazwa, setNazwa] = useState("");
   const [zdjecieSrc, setZdjecieSrc] = useState("");
@@ -31,12 +33,62 @@ const EdytujPotrawe: React.FC<Props> = ({
 
   useEffect(() => {
     pobierzTagi();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pobierzTagi = async () => {
     const response = await fetch("/apps/posilki/tagi");
     const data = await response.json();
     setTagi(data);
+  };
+
+  useEffect(() => {
+    if (edytowanaPotrawa) {
+      setNazwa(edytowanaPotrawa.nazwa);
+      setZdjecieSrc(edytowanaPotrawa.zdjecie);
+      setPokazZdjecie(Boolean(edytowanaPotrawa.zdjecie));
+      setUwagi(edytowanaPotrawa.uwagi);
+      setWybraneTagi(edytowanaPotrawa.tagi);
+      setLinkDoPrzepisu(edytowanaPotrawa.link);
+    }
+  }, [edytowanaPotrawa]);
+
+  const dajTytul = () => {
+    if (edytowanaPotrawa) {
+      return "Edycja potrawy";
+    }
+    return "Dodawanie potrawy";
+  };
+
+  const akceptujDodawaniePotrawy = async () => {
+    const dodawanaPotrawa: IPotrawa = {
+      nazwa,
+      zdjecie: zdjecieSrc,
+      uwagi,
+      tagi: wybraneTagi,
+      link: linkDoPrzepisu,
+    };
+    const dodanaPotrawa = await EdytujPotraweHelper.dodajPotrawe(dodawanaPotrawa);
+    if (dodanaPotrawa) {
+      setPotrawy((potrawy) => [...potrawy, dodanaPotrawa]);
+      setDodawaniePotrawy(false);
+    }
+  };
+
+  const akceptujEdycjePotrawy = async () => {
+    const potrawaDoEdycji: IPotrawa = {
+      _id: edytowanaPotrawa!._id,
+      nazwa,
+      zdjecie: zdjecieSrc,
+      uwagi,
+      tagi: wybraneTagi,
+      link: linkDoPrzepisu,
+    };
+    const zedytowanaPotrawa = await EdytujPotraweHelper.edytujPotrawe(potrawaDoEdycji);
+
+    if (zedytowanaPotrawa) {
+      setPotrawy((potrawy) => [...potrawy.filter((p) => p._id !== zedytowanaPotrawa._id), zedytowanaPotrawa]);
+      setDodawaniePotrawy(false);
+    }
   };
 
   const onDodajPotrawe = () => {
@@ -64,31 +116,6 @@ const EdytujPotrawe: React.FC<Props> = ({
     setUwagi(event.target.value);
   };
 
-  const onTagiChange = (event: any, values: ITag[]) => {
-    setWybraneTagi(values);
-  };
-
-  const onTagiInputKeyDown = async (event: any) => {
-    const value = event.target.value;
-    if (event.key === "Enter" && value) {
-      const wyszukanyTag = tagi.find((tag) => tag.nazwa === value);
-
-      if (wyszukanyTag) {
-        const wyszukanyWybranyTag = wybraneTagi.find((tag) => tag.nazwa === value);
-        if (!wyszukanyWybranyTag) {
-          setWybraneTagi([...wybraneTagi, wyszukanyTag]);
-        }
-      } else {
-        const dodanyTag = await EdytujPotraweHelper.dodajNowyTag(value);
-
-        if (dodanyTag) {
-          setWybraneTagi((prevTagi) => [...prevTagi, dodanyTag]);
-          setTagi((prevTagi) => [...prevTagi, dodanyTag]);
-        }
-      }
-    }
-  };
-
   const onLinkDoPrzepisuChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLinkDoPrzepisu(event.target.value);
   };
@@ -98,17 +125,10 @@ const EdytujPotrawe: React.FC<Props> = ({
   };
 
   const onDodajClick = async () => {
-    const dodawanaPotrawa: IPotrawa = {
-      nazwa,
-      zdjecie: zdjecieSrc,
-      uwagi,
-      tagi: wybraneTagi,
-      link: linkDoPrzepisu,
-    };
-    const dodanaPotrawa = await EdytujPotraweHelper.dodajPotrawe(dodawanaPotrawa);
-    if (dodanaPotrawa) {
-      setPotrawy((potrawy) => [...potrawy, dodanaPotrawa]);
-      setDodawaniePotrawy(false);
+    if (edytowanaPotrawa) {
+      await akceptujEdycjePotrawy();
+    } else {
+      await akceptujDodawaniePotrawy();
     }
   };
 
@@ -116,7 +136,7 @@ const EdytujPotrawe: React.FC<Props> = ({
     <div>
       <DodajButton onDodaj={onDodajPotrawe} />
       <Dialog fullWidth maxWidth={"sm"} open={dodawaniePotrawy}>
-        <DialogTitle>Dodaj potrawę</DialogTitle>
+        <DialogTitle>{dajTytul()}</DialogTitle>
         <DialogContent dividers>
           <form className={classes.root}>
             <div>

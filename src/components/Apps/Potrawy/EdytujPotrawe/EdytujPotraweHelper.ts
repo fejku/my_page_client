@@ -26,9 +26,7 @@ export default class EdytujPotraweHelper {
     return await response.json();
   };
 
-  static dodajPotrawe = async (
-    dodawanaPotrawa: IPotrawa
-  ): Promise<IPotrawa> => {
+  static dodajPotrawe = async (dodawanaPotrawa: IPotrawa): Promise<IPotrawa> => {
     const response = await fetch("/apps/posilki/potrawy", {
       method: "POST",
       headers: {
@@ -39,9 +37,18 @@ export default class EdytujPotraweHelper {
     return await response.json();
   };
 
+  static edytujPotrawe = async (edytowanaPotrawa: IPotrawa): Promise<IPotrawa> => {
+    const response = await fetch(`/apps/posilki/potrawy/${edytowanaPotrawa._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(edytowanaPotrawa),
+    });
+    return await response.json();
+  };
+
   static dajNieWybraneTagi = (tagi: ITag[], wybraneTagi: ITag[]) => [
-    ...tagi.filter(
-      (tag) => !wybraneTagi.find((wybranyTag) => tag._id === wybranyTag._id)
-    ),
+    ...tagi.filter((tag) => !wybraneTagi.find((wybranyTag) => tag._id === wybranyTag._id)),
   ];
 }

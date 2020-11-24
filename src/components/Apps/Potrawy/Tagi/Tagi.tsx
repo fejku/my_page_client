@@ -14,7 +14,7 @@ const Tagi: React.FC<Props> = ({ tagi, filtrTagiState, setTagi }) => {
   return (
     <div className={classes.Tagi}>
       {tagi.map((tag) => (
-        <Tag tag={tag} filtrTagiState={filtrTagiState} />
+        <Tag key={tag._id} tag={tag} filtrTagiState={filtrTagiState} />
       ))}
       {Boolean(setTagi) && <DodajTag setTagi={setTagi!} />}
     </div>

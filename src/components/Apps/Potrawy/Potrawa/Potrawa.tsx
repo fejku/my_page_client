@@ -18,13 +18,10 @@ interface Props {
   potrawa: IPotrawa;
   setPotrawy: React.Dispatch<React.SetStateAction<IPotrawa[]>>;
   setDodawaniePotrawy: React.Dispatch<React.SetStateAction<boolean>>;
+  setEdytowanaPotrawa: React.Dispatch<React.SetStateAction<IPotrawa | undefined>>;
 }
 
-const Potrawa: React.FC<Props> = ({
-  potrawa,
-  setPotrawy,
-  setDodawaniePotrawy,
-}) => {
+const Potrawa: React.FC<Props> = ({ potrawa, setPotrawy, setDodawaniePotrawy, setEdytowanaPotrawa }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const onMoreClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -36,6 +33,8 @@ const Potrawa: React.FC<Props> = ({
   };
 
   const onEdytujClick = async () => {
+    onMenuClose();
+    setEdytowanaPotrawa(potrawa);
     setDodawaniePotrawy(true);
   };
 
@@ -69,7 +68,7 @@ const Potrawa: React.FC<Props> = ({
             action: classes.PotrawaHeaderAction,
           }}
         />
-        <CardMedia className={classes.media} image={potrawa.zdjecie} />
+        {potrawa.zdjecie && <CardMedia className={classes.media} image={potrawa.zdjecie} />}
         <CardContent>
           <Typography variant="body2" color="textSecondary" component="p">
             {potrawa.uwagi}
@@ -79,12 +78,7 @@ const Potrawa: React.FC<Props> = ({
           ))}
         </CardContent>
       </Card>
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={onMenuClose}
-      >
+      <Menu anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={onMenuClose}>
         <MenuItem onClick={onEdytujClick}>Edytuj</MenuItem>
         <MenuItem onClick={onUsunClick}>Usuń</MenuItem>
       </Menu>

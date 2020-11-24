@@ -12,6 +12,7 @@ interface Props {}
 const Potrawy = (props: Props) => {
   const [dodawaniePotrawy, setDodawaniePotrawy] = useState(false);
   const [potrawy, setPotrawy] = useState<IPotrawa[]>([]);
+  const [edytowanaPotrawa, setEdytowanaPotrawa] = useState<IPotrawa | undefined>(undefined);
   const [tagi, setTagi] = useState<ITag[]>([]);
   const [filtrNazwa, setFiltrNazwa] = useState("");
   const [filtrTagi, setFiltrTagi] = useState<ITag[]>([]);
@@ -52,6 +53,7 @@ const Potrawy = (props: Props) => {
             potrawa={potrawa}
             setPotrawy={setPotrawy}
             setDodawaniePotrawy={setDodawaniePotrawy}
+            setEdytowanaPotrawa={setEdytowanaPotrawa}
           />
         ))}
       </div>
@@ -60,6 +62,7 @@ const Potrawy = (props: Props) => {
         tagiState={[tagi, setTagi]}
         dodawaniePotrawy={dodawaniePotrawy}
         setDodawaniePotrawy={setDodawaniePotrawy}
+        edytowanaPotrawa={edytowanaPotrawa}
       />
     </div>
   );
