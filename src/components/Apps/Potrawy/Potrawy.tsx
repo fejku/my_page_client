@@ -12,12 +12,14 @@ interface Props {}
 const Potrawy = (props: Props) => {
   const [dodawaniePotrawy, setDodawaniePotrawy] = useState(false);
   const [potrawy, setPotrawy] = useState<IPotrawa[]>([]);
+  const [tagi, setTagi] = useState<ITag[]>([]);
   const [filtrNazwa, setFiltrNazwa] = useState("");
   const [filtrTagi, setFiltrTagi] = useState<ITag[]>([]);
   const [przefiltrowanePotrawy, setPrzefiltrowanePotrawy] = useState<IPotrawa[]>([]);
 
   useEffect(() => {
     getPotrawy();
+    getTagi();
   }, []);
 
   useEffect(() => {
@@ -30,17 +32,19 @@ const Potrawy = (props: Props) => {
     setPotrawy(data);
   };
 
+  const getTagi = async () => {
+    const response = await fetch("/apps/posilki/tagi");
+    const data = await response.json();
+    setTagi(data);
+  };
+
   const ustawPrzefiltrowanePotrawy = () => {
     setPrzefiltrowanePotrawy(PotrawyHelper.dajPrzefiltrowanePotrawy(potrawy, filtrNazwa, filtrTagi));
   };
 
   return (
     <div className={classes.Potrawy}>
-      <Filtry
-        potrawy={potrawy}
-        filtrNazwaState={[filtrNazwa, setFiltrNazwa]}
-        filtrTagiState={[filtrTagi, setFiltrTagi]}
-      />
+      <Filtry tagi={tagi} filtrNazwaState={[filtrNazwa, setFiltrNazwa]} filtrTagiState={[filtrTagi, setFiltrTagi]} />
       <div className={classes.ListaPotraw}>
         {przefiltrowanePotrawy.map((potrawa) => (
           <Potrawa
@@ -53,6 +57,7 @@ const Potrawy = (props: Props) => {
       </div>
       <EdytujPotrawe
         setPotrawy={setPotrawy}
+        tagiState={[tagi, setTagi]}
         dodawaniePotrawy={dodawaniePotrawy}
         setDodawaniePotrawy={setDodawaniePotrawy}
       />

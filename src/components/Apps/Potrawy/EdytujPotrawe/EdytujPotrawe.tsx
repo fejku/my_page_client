@@ -1,31 +1,24 @@
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-} from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@material-ui/core";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import DodajButton from "../../../Common/DodajButton/DodajButton";
 import IPotrawa from "../../../../interfaces/apps/potrawy/IPotrawa";
 import ITag from "../../../../interfaces/apps/potrawy/ITag";
 import EdytujPotraweHelper from "./EdytujPotraweHelper";
 import classes from "./EdytujPotrawe.module.scss";
+import Tagi from "../Tagi/Tagi";
 
 interface Props {
   setPotrawy: React.Dispatch<React.SetStateAction<IPotrawa[]>>;
+  tagiState: [ITag[], React.Dispatch<React.SetStateAction<ITag[]>>];
   dodawaniePotrawy: boolean;
   setDodawaniePotrawy: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EdytujPotrawe: React.FC<Props> = ({
   setPotrawy,
+  tagiState: [tagi, setTagi],
   dodawaniePotrawy,
   setDodawaniePotrawy,
 }) => {
@@ -33,7 +26,6 @@ const EdytujPotrawe: React.FC<Props> = ({
   const [zdjecieSrc, setZdjecieSrc] = useState("");
   const [pokazZdjecie, setPokazZdjecie] = useState(false);
   const [uwagi, setUwagi] = useState("");
-  const [tagi, setTagi] = useState<ITag[]>([]);
   const [wybraneTagi, setWybraneTagi] = useState<ITag[]>([]);
   const [linkDoPrzepisu, setLinkDoPrzepisu] = useState("");
 
@@ -82,9 +74,7 @@ const EdytujPotrawe: React.FC<Props> = ({
       const wyszukanyTag = tagi.find((tag) => tag.nazwa === value);
 
       if (wyszukanyTag) {
-        const wyszukanyWybranyTag = wybraneTagi.find(
-          (tag) => tag.nazwa === value
-        );
+        const wyszukanyWybranyTag = wybraneTagi.find((tag) => tag.nazwa === value);
         if (!wyszukanyWybranyTag) {
           setWybraneTagi([...wybraneTagi, wyszukanyTag]);
         }
@@ -99,9 +89,7 @@ const EdytujPotrawe: React.FC<Props> = ({
     }
   };
 
-  const onLinkDoPrzepisuChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const onLinkDoPrzepisuChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLinkDoPrzepisu(event.target.value);
   };
 
@@ -117,9 +105,7 @@ const EdytujPotrawe: React.FC<Props> = ({
       tagi: wybraneTagi,
       link: linkDoPrzepisu,
     };
-    const dodanaPotrawa = await EdytujPotraweHelper.dodajPotrawe(
-      dodawanaPotrawa
-    );
+    const dodanaPotrawa = await EdytujPotraweHelper.dodajPotrawe(dodawanaPotrawa);
     if (dodanaPotrawa) {
       setPotrawy((potrawy) => [...potrawy, dodanaPotrawa]);
       setDodawaniePotrawy(false);
@@ -134,12 +120,7 @@ const EdytujPotrawe: React.FC<Props> = ({
         <DialogContent dividers>
           <form className={classes.root}>
             <div>
-              <TextField
-                label="Nazwa potrawy"
-                value={nazwa}
-                onChange={onNazwaChange}
-                fullWidth
-              />
+              <TextField label="Nazwa potrawy" value={nazwa} onChange={onNazwaChange} fullWidth />
             </div>
             <div>
               <TextField
@@ -162,44 +143,11 @@ const EdytujPotrawe: React.FC<Props> = ({
               {!pokazZdjecie && <PhotoCameraIcon />}
             </div>
             <div>
-              <TextField
-                label="Uwagi"
-                value={uwagi}
-                onChange={onUwagiChange}
-                fullWidth
-              />
+              <TextField label="Uwagi" value={uwagi} onChange={onUwagiChange} fullWidth />
             </div>
-            <Autocomplete
-              multiple
-              limitTags={2}
-              options={EdytujPotraweHelper.dajNieWybraneTagi(tagi, wybraneTagi)}
-              getOptionLabel={(tag) => tag.nazwa}
-              renderOption={(option) => (
-                <span className={classes.asd}>
-                  <span className={classes.asd1}>{option.nazwa}</span>
-                  <IconButton size="small" edge="end">
-                    <DeleteForeverIcon />
-                  </IconButton>
-                </span>
-              )}
-              value={wybraneTagi}
-              onChange={onTagiChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Tagi"
-                  placeholder="Obiad"
-                  onKeyDown={onTagiInputKeyDown}
-                />
-              )}
-            />
+            <Tagi tagi={tagi} filtrTagiState={[wybraneTagi, setWybraneTagi]} setTagi={setTagi} />
             <div>
-              <TextField
-                label="Link do przepisu"
-                value={linkDoPrzepisu}
-                onChange={onLinkDoPrzepisuChange}
-                fullWidth
-              />
+              <TextField label="Link do przepisu" value={linkDoPrzepisu} onChange={onLinkDoPrzepisuChange} fullWidth />
             </div>
           </form>
         </DialogContent>

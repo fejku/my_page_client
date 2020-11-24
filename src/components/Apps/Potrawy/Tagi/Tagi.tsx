@@ -1,30 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ITag from "../../../../interfaces/apps/potrawy/ITag";
+import DodajTag from "./DodajTag/DodajTag";
 import Tag from "./Tag/Tag";
 import classes from "./Tagi.module.css";
 
 interface Props {
+  tagi: ITag[];
   filtrTagiState: [ITag[], React.Dispatch<React.SetStateAction<ITag[]>>];
+  setTagi?: React.Dispatch<React.SetStateAction<ITag[]>>;
 }
 
-const Tagi: React.FC<Props> = ({ filtrTagiState }) => {
-  const [tagi, setTagi] = useState<ITag[]>([]);
-
-  useEffect(() => {
-    getTagi();
-  }, []);
-
-  const getTagi = async () => {
-    const response = await fetch("/apps/posilki/tagi");
-    const data = await response.json();
-    setTagi(data);
-  };
-
+const Tagi: React.FC<Props> = ({ tagi, filtrTagiState, setTagi }) => {
   return (
     <div className={classes.Tagi}>
       {tagi.map((tag) => (
         <Tag tag={tag} filtrTagiState={filtrTagiState} />
       ))}
+      {Boolean(setTagi) && <DodajTag setTagi={setTagi!} />}
     </div>
   );
 };
