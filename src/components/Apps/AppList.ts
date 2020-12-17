@@ -1,5 +1,6 @@
 import IApp from "../../interfaces/IApp";
 import Potrawy from "./Potrawy/Potrawy";
+import SprawdzanieMangi from "./SprawdzanieMangi/SprawdzanieMangi";
 
 export const appList: IApp[] = [
   {
@@ -34,5 +35,13 @@ export const appList: IApp[] = [
     link: "oplaty",
     image: "https://material-ui.com/static/images/cards/paella.jpg",
     component: Potrawy,
+  },
+  {
+    // "Sprawdzanie czy wyszłedł nowy chapter"
+    tytul: "Sprawdzanie mangi",
+    link: "sprawdzanie-mangi",
+    image:
+      "https://aikido.waw.pl/wp-content/uploads/2019/08/turn-pen-976930_1280.jpg",
+    component: SprawdzanieMangi,
   },
 ];

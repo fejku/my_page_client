@@ -1,0 +1,19 @@
+.Wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.Label {
+  width: 8ch;
+}
+
+.Link {
+  display: flex;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 8px;
+}
+
+.LinkInput {
+  flex: 1;
+  padding-left: 12px;
+}

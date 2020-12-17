@@ -3,7 +3,6 @@ import { Route, useRouteMatch } from "react-router-dom";
 import PrivateRoute from "../../hocs/PrivateRoute";
 import Apps from "./Apps";
 import { appList } from "./AppList";
-import Potrawy from "./Potrawy/Potrawy";
 
 interface Props {}
 
@@ -17,7 +16,7 @@ const AppsRoutes = (props: Props) => {
           key={app.link}
           path={`${path}/${app.link}`}
           roles={["user", "admin"]}
-          component={Potrawy}
+          component={app.component}
         />
       ))}
     </>
