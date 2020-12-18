@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import clsx from "clsx";
+import moment from "moment";
 import {
   IconButton,
   Link,
@@ -13,8 +15,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ChromeReaderModeIcon from "@material-ui/icons/ChromeReaderMode";
 import SyncIcon from "@material-ui/icons/Sync";
 import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
-// import classes from "./MangaItem.module.scss";
 import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IOdswiezenieMangiWynikDTO";
+import classes from "./MangaItem.module.scss";
 
 interface Props {
   manga: IManga;
@@ -102,6 +104,23 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
     setChaptery(data.chaptery);
   };
 
+  const onCzytajChapterClick = () => {
+    if (aktualnyChapter.localeCompare(chaptery[0].numer) === 0) {
+      const urlNajnowszyChapter = chaptery.find(
+        (chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0
+      )!.url;
+
+      window.open(urlNajnowszyChapter, "_blank");
+    } else {
+      const kolejnosc = dajKolejnoscAktualnegoChaptera() + 1;
+
+      const urlNastepny = chaptery.find(
+        (chapter) => chapter.kolejnosc === kolejnosc
+      )!.url;
+      window.open(urlNastepny, "_blank");
+    }
+  };
+
   const onUsunMangaClick = async () => {
     const response = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}`, {
       method: "DELETE",
@@ -114,37 +133,72 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
   };
 
   return (
-    <TableRow key={manga._id}>
+    <TableRow key={manga._id} className={classes.MangaItem}>
       <TableCell>
-        <Link href={manga.url} target="_blank" rel="noopener noreferrer">
+        <Link
+          className={classes.MangaItemLink}
+          href={manga.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {manga.nazwa}
         </Link>
       </TableCell>
       <TableCell>
-        <IconButton onClick={onPrevChapterClick}>
+        <IconButton
+          className={clsx(classes.ChapterButton, classes.ChapterButtonMinus)}
+          color="primary"
+          onClick={onPrevChapterClick}
+        >
           <RemoveIcon />
         </IconButton>
-        <Select value={aktualnyChapter} onChange={onChapterySelectChange}>
+        <Select
+          className={classes.ChapterSelect}
+          variant="outlined"
+          margin="dense"
+          value={aktualnyChapter}
+          onChange={onChapterySelectChange}
+        >
           {chaptery.map((chapter) => (
-            <MenuItem key={chapter._id} value={chapter.numer}>
+            <MenuItem
+              key={chapter._id}
+              className={classes.ChapterSelectItem}
+              value={chapter.numer}
+            >
               {chapter.numer}
             </MenuItem>
           ))}
         </Select>
-        <IconButton onClick={onNextChapterClick}>
+        <IconButton
+          className={clsx(classes.ChapterButton, classes.ChapterButtonPlus)}
+          color="primary"
+          onClick={onNextChapterClick}
+        >
           <AddIcon />
         </IconButton>
       </TableCell>
       <TableCell>{chaptery[0].numer}</TableCell>
-      <TableCell>{ostatnieOdswiezenie}</TableCell>
+      <TableCell>{moment.utc(ostatnieOdswiezenie).fromNow()}</TableCell>
       <TableCell>
-        <IconButton onClick={onOdswiezChapterClick}>
+        <IconButton
+          className={classes.AkcjaButton}
+          color="primary"
+          onClick={onOdswiezChapterClick}
+        >
           <SyncIcon />
         </IconButton>
-        <IconButton onClick={onPrevChapterClick}>
+        <IconButton
+          className={classes.AkcjaButton}
+          color="primary"
+          onClick={onCzytajChapterClick}
+        >
           <ChromeReaderModeIcon />
         </IconButton>
-        <IconButton onClick={onUsunMangaClick}>
+        <IconButton
+          className={classes.AkcjaButton}
+          color="primary"
+          onClick={onUsunMangaClick}
+        >
           <DeleteIcon />
         </IconButton>
       </TableCell>

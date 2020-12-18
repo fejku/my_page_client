@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import moment from "moment";
+import "moment/locale/pl";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -11,6 +13,8 @@ import "./App.css";
 interface Props {}
 
 const App: React.FC<Props> = (props) => {
+  moment.locale("pl");
+
   return (
     <BrowserRouter>
       <Navbar />

@@ -11,6 +11,7 @@ import IManga from "../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
+import classes from "./SprawdzanieMangi.module.scss";
 
 interface Props {}
 
@@ -38,18 +39,18 @@ const SprawdzanieMangi = (props: Props) => {
   };
 
   return (
-    <div>
-      <Button variant="outlined" fullWidth>
+    <div className={classes.SprawdzanieMangi}>
+      <Button className={classes.SprawdzMangi} variant="outlined" fullWidth>
         Sprawdź mangi
       </Button>
-      <Table>
+      <Table className={classes.MangiTable}>
         <TableHead>
           <TableRow>
             <TableCell>Nazwa</TableCell>
             <TableCell>Ostatni przeczytany</TableCell>
             <TableCell>Najnowszy chapter</TableCell>
             <TableCell>Ostatnie odświeżenie</TableCell>
-            <TableCell></TableCell>
+            <TableCell>Akcje</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
