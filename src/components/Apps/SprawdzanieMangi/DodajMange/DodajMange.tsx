@@ -13,7 +13,6 @@ import {
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import DodajButton from "../../../Common/DodajButton/DodajButton";
-import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import classes from "./DodajMange.module.scss";
 import IPobieranieChapterowWynikDTO, {
   IPobieranieChapterowChapterDTO,
@@ -21,15 +20,13 @@ import IPobieranieChapterowWynikDTO, {
 import IZapisanieMangiKryteriaDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IZapisanieMangiKryteriaDTO";
 
 interface Props {
-  setMangi: React.Dispatch<React.SetStateAction<IManga[]>>;
   dodawanieState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
-  zapiszMange: () => Promise<void>;
+  getMangi: () => Promise<void>;
 }
 
 const DodajMange: React.FC<Props> = ({
-  setMangi,
   dodawanieState: [dodawanieMangi, setDodawanieMangi],
-  zapiszMange,
+  getMangi,
 }) => {
   const [link, setLink] = useState("");
   const [nazwa, setNazwa] = useState("");
@@ -111,7 +108,7 @@ const DodajMange: React.FC<Props> = ({
     console.log("TODO: Snackbars po dodaniu mangi");
     console.log("Dodano mangę: ", data.mangaNazwa);
 
-    await zapiszMange();
+    await getMangi();
   };
 
   return (

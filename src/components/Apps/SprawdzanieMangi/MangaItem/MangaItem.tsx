@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Button,
   IconButton,
   Link,
   MenuItem,
@@ -14,17 +13,54 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ChromeReaderModeIcon from "@material-ui/icons/ChromeReaderMode";
 import SyncIcon from "@material-ui/icons/Sync";
 import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
-import classes from "./MangaItem.module.scss";
+// import classes from "./MangaItem.module.scss";
+import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IOdswiezenieMangiWynikDTO";
 
 interface Props {
   manga: IManga;
+  getMangi: () => Promise<void>;
 }
 
-const MangaItem: React.FC<Props> = ({ manga }) => {
+const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
   const [aktualnyChapter, setAktualnyChapter] = useState(manga.ostatniChapter);
+  const [chaptery, setChaptery] = useState(manga.chaptery);
+  const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(
+    manga.ostatnieOdswiezenie
+  );
+
+  useEffect(() => {
+    manga.chaptery = chaptery;
+  }, [chaptery]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    manga.ostatnieOdswiezenie = ostatnieOdswiezenie;
+  }, [ostatnieOdswiezenie]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (manga.ostatniChapter.localeCompare(aktualnyChapter) !== 0) {
+      zmienAktualnyChapter();
+    }
+  }, [aktualnyChapter]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const zmienAktualnyChapter = async () => {
+    const response = await fetch(
+      `/apps/sprawdzanie-mangi/manga/${manga._id}/`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ostatniChapter: aktualnyChapter }),
+      }
+    );
+
+    const data: IManga = await response.json();
+
+    manga.ostatniChapter = data.ostatniChapter;
+  };
 
   const dajKolejnoscAktualnegoChaptera = () => {
-    return manga.chaptery.find(
+    return chaptery.find(
       (chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0
     )!.kolejnosc;
   };
@@ -32,7 +68,7 @@ const MangaItem: React.FC<Props> = ({ manga }) => {
   const onPrevChapterClick = () => {
     const kolejnoscAktualnegoChaptera = dajKolejnoscAktualnegoChaptera();
 
-    const prevNumer = manga.chaptery.find(
+    const prevNumer = chaptery.find(
       (chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera - 1
     )!.numer;
 
@@ -42,7 +78,7 @@ const MangaItem: React.FC<Props> = ({ manga }) => {
   const onNextChapterClick = () => {
     const kolejnoscAktualnegoChaptera = dajKolejnoscAktualnegoChaptera();
 
-    const nextNumer = manga.chaptery.find(
+    const nextNumer = chaptery.find(
       (chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera + 1
     )!.numer;
 
@@ -55,12 +91,26 @@ const MangaItem: React.FC<Props> = ({ manga }) => {
     setAktualnyChapter(event.target.value as string);
   };
 
+  const onOdswiezChapterClick = async () => {
+    const response = await fetch(
+      `/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`
+    );
+    const data: IOdswiezenieMangiWynikDTO = await response.json();
+    console.log(data);
+
+    setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
+    setChaptery(data.chaptery);
+  };
+
   const onUsunMangaClick = async () => {
     const response = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}`, {
       method: "DELETE",
     });
 
-    // const data: IPobieranieChapterowWynikDTO = await response.json();
+    if (response.status === 201) {
+      console.log("TODO: Snackbars po usnięciu mangi");
+      getMangi();
+    }
   };
 
   return (
@@ -75,7 +125,7 @@ const MangaItem: React.FC<Props> = ({ manga }) => {
           <RemoveIcon />
         </IconButton>
         <Select value={aktualnyChapter} onChange={onChapterySelectChange}>
-          {manga.chaptery.map((chapter) => (
+          {chaptery.map((chapter) => (
             <MenuItem key={chapter._id} value={chapter.numer}>
               {chapter.numer}
             </MenuItem>
@@ -85,10 +135,10 @@ const MangaItem: React.FC<Props> = ({ manga }) => {
           <AddIcon />
         </IconButton>
       </TableCell>
-      <TableCell>{manga.chaptery[0].numer}</TableCell>
-      <TableCell>{manga.ostatnieOdswiezenie}</TableCell>
+      <TableCell>{chaptery[0].numer}</TableCell>
+      <TableCell>{ostatnieOdswiezenie}</TableCell>
       <TableCell>
-        <IconButton onClick={onPrevChapterClick}>
+        <IconButton onClick={onOdswiezChapterClick}>
           <SyncIcon />
         </IconButton>
         <IconButton onClick={onPrevChapterClick}>

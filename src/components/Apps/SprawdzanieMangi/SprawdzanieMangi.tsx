@@ -54,15 +54,14 @@ const SprawdzanieMangi = (props: Props) => {
         </TableHead>
         <TableBody>
           {mangi.map((manga) => (
-            <MangaItem manga={manga} />
+            <MangaItem manga={manga} getMangi={getMangi} />
           ))}
         </TableBody>
       </Table>
 
       <DodajMange
-        setMangi={setMangi}
         dodawanieState={[dodawanieMangi, setDodawanieMangi]}
-        zapiszMange={getMangi}
+        getMangi={getMangi}
       />
     </div>
   );
