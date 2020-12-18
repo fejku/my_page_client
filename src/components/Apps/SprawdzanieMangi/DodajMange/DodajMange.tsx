@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -18,6 +18,7 @@ import IPobieranieChapterowWynikDTO, {
   IPobieranieChapterowChapterDTO,
 } from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieChapterowWynikDTO";
 import IZapisanieMangiKryteriaDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IZapisanieMangiKryteriaDTO";
+import { SnackBarContext } from "../../../../contexts/SnackBarContext";
 
 interface Props {
   dodawanieState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
@@ -28,6 +29,8 @@ const DodajMange: React.FC<Props> = ({
   dodawanieState: [dodawanieMangi, setDodawanieMangi],
   getMangi,
 }) => {
+  const snackBarContext = useContext(SnackBarContext);
+
   const [link, setLink] = useState("");
   const [nazwa, setNazwa] = useState("");
   const [chaptery, setChaptery] = useState<IPobieranieChapterowChapterDTO[]>(
@@ -106,9 +109,9 @@ const DodajMange: React.FC<Props> = ({
     const data = await response.json();
 
     console.log("TODO: Progress podczas dodawania");
-    console.log("TODO: Snackbars po dodaniu mangi");
-    console.log("Dodano mangę: ", data.mangaNazwa);
 
+    snackBarContext.setMsgSnackBar(`Dodano mangę: ${data.mangaNazwa}`);
+    snackBarContext.setOpenSnackBar(true);
     await getMangi();
   };
 
