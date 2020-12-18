@@ -12,12 +12,14 @@ import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
 import classes from "./SprawdzanieMangi.module.scss";
+import { sleepRand } from "../../Common/CommonHelper";
 
 interface Props {}
 
 const SprawdzanieMangi = (props: Props) => {
   const [mangi, setMangi] = useState<IManga[]>([]);
   const [dodawanieMangi, setDodawanieMangi] = useState(false);
+  const [odswiezanaManga, setOdswiezanaManga] = useState("");
 
   useEffect(() => {
     getMangi();
@@ -38,9 +40,21 @@ const SprawdzanieMangi = (props: Props) => {
     setMangi(dataMangi);
   };
 
+  const onSprawdzMangiClick = async () => {
+    for (const manga of mangi) {
+      setOdswiezanaManga(manga._id!);
+      await sleepRand(3000, 10000);
+    }
+  };
+
   return (
     <div className={classes.SprawdzanieMangi}>
-      <Button className={classes.SprawdzMangi} variant="outlined" fullWidth>
+      <Button
+        className={classes.SprawdzMangi}
+        variant="outlined"
+        fullWidth
+        onClick={onSprawdzMangiClick}
+      >
         Sprawdź mangi
       </Button>
       <Table className={classes.MangiTable}>
@@ -55,7 +69,11 @@ const SprawdzanieMangi = (props: Props) => {
         </TableHead>
         <TableBody>
           {mangi.map((manga) => (
-            <MangaItem manga={manga} getMangi={getMangi} />
+            <MangaItem
+              manga={manga}
+              getMangi={getMangi}
+              odswiezanaManga={odswiezanaManga}
+            />
           ))}
         </TableBody>
       </Table>

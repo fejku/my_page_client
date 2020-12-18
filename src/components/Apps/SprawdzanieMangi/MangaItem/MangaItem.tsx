@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 import moment from "moment";
 import {
@@ -16,19 +16,31 @@ import ChromeReaderModeIcon from "@material-ui/icons/ChromeReaderMode";
 import SyncIcon from "@material-ui/icons/Sync";
 import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IOdswiezenieMangiWynikDTO";
+import { SnackBarContext } from "../../../../contexts/SnackBarContext";
 import classes from "./MangaItem.module.scss";
 
 interface Props {
   manga: IManga;
   getMangi: () => Promise<void>;
+  odswiezanaManga: string;
 }
 
-const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
+const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
+  const snackBarContext = useContext(SnackBarContext);
+
   const [aktualnyChapter, setAktualnyChapter] = useState(manga.ostatniChapter);
   const [chaptery, setChaptery] = useState(manga.chaptery);
   const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(
     manga.ostatnieOdswiezenie
   );
+
+  useEffect(() => {
+    if (manga && manga._id) {
+      if (manga._id.localeCompare(odswiezanaManga) === 0) {
+        odswiezMange();
+      }
+    }
+  }, [odswiezanaManga]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     manga.chaptery = chaptery;
@@ -43,6 +55,20 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
       zmienAktualnyChapter();
     }
   }, [aktualnyChapter]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const czyMangaNaBiezaco = () => {
+    return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
+  };
+
+  const czyChapterMinusNieaktywny = () => {
+    return (
+      aktualnyChapter.localeCompare(chaptery[chaptery.length - 1].numer) === 0
+    );
+  };
+
+  const czyChapterPlusNieaktywny = () => {
+    return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
+  };
 
   const zmienAktualnyChapter = async () => {
     const response = await fetch(
@@ -65,6 +91,17 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
     return chaptery.find(
       (chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0
     )!.kolejnosc;
+  };
+
+  const odswiezMange = async () => {
+    const response = await fetch(
+      `/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`
+    );
+    const data: IOdswiezenieMangiWynikDTO = await response.json();
+    console.log(data);
+
+    setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
+    setChaptery(data.chaptery);
   };
 
   const onPrevChapterClick = () => {
@@ -94,14 +131,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
   };
 
   const onOdswiezChapterClick = async () => {
-    const response = await fetch(
-      `/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`
-    );
-    const data: IOdswiezenieMangiWynikDTO = await response.json();
-    console.log(data);
-
-    setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
-    setChaptery(data.chaptery);
+    await odswiezMange();
   };
 
   const onCzytajChapterClick = () => {
@@ -127,13 +157,19 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
     });
 
     if (response.status === 201) {
-      console.log("TODO: Snackbars po usnięciu mangi");
-      getMangi();
+      snackBarContext.setMsgSnackBar(`Usunięto mangę: ${manga.nazwa}`);
+      snackBarContext.setOpenSnackBar(true);
+      await getMangi();
     }
   };
 
   return (
-    <TableRow key={manga._id} className={classes.MangaItem}>
+    <TableRow
+      key={manga._id}
+      className={clsx(classes.MangaItem, {
+        [classes.MangaItemNaBiezaco]: czyMangaNaBiezaco(),
+      })}
+    >
       <TableCell>
         <Link
           className={classes.MangaItemLink}
@@ -145,62 +181,66 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi }) => {
         </Link>
       </TableCell>
       <TableCell>
-        <IconButton
-          className={clsx(classes.ChapterButton, classes.ChapterButtonMinus)}
-          color="primary"
-          onClick={onPrevChapterClick}
-        >
-          <RemoveIcon />
-        </IconButton>
-        <Select
-          className={classes.ChapterSelect}
-          variant="outlined"
-          margin="dense"
-          value={aktualnyChapter}
-          onChange={onChapterySelectChange}
-        >
-          {chaptery.map((chapter) => (
-            <MenuItem
-              key={chapter._id}
-              className={classes.ChapterSelectItem}
-              value={chapter.numer}
-            >
-              {chapter.numer}
-            </MenuItem>
-          ))}
-        </Select>
-        <IconButton
-          className={clsx(classes.ChapterButton, classes.ChapterButtonPlus)}
-          color="primary"
-          onClick={onNextChapterClick}
-        >
-          <AddIcon />
-        </IconButton>
+        <div className={classes.ChapterSelectWrapper}>
+          <IconButton
+            color="primary"
+            disabled={czyChapterMinusNieaktywny()}
+            onClick={onPrevChapterClick}
+          >
+            <RemoveIcon />
+          </IconButton>
+          <Select
+            className={classes.ChapterSelect}
+            variant="outlined"
+            margin="dense"
+            value={aktualnyChapter}
+            onChange={onChapterySelectChange}
+          >
+            {chaptery.map((chapter) => (
+              <MenuItem
+                key={chapter._id}
+                className={classes.ChapterSelectItem}
+                value={chapter.numer}
+              >
+                {chapter.numer}
+              </MenuItem>
+            ))}
+          </Select>
+          <IconButton
+            color="primary"
+            disabled={czyChapterPlusNieaktywny()}
+            onClick={onNextChapterClick}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
       </TableCell>
       <TableCell>{chaptery[0].numer}</TableCell>
       <TableCell>{moment.utc(ostatnieOdswiezenie).fromNow()}</TableCell>
       <TableCell>
-        <IconButton
-          className={classes.AkcjaButton}
-          color="primary"
-          onClick={onOdswiezChapterClick}
-        >
-          <SyncIcon />
-        </IconButton>
-        <IconButton
-          className={classes.AkcjaButton}
-          color="primary"
-          onClick={onCzytajChapterClick}
-        >
-          <ChromeReaderModeIcon />
-        </IconButton>
-        <IconButton
-          className={classes.AkcjaButton}
-          color="primary"
-          onClick={onUsunMangaClick}
-        >
-          <DeleteIcon />
-        </IconButton>
+        <div className={classes.MangaAkcje}>
+          <IconButton
+            className={classes.AkcjaButton}
+            color="primary"
+            onClick={onOdswiezChapterClick}
+          >
+            <SyncIcon />
+          </IconButton>
+          <IconButton
+            className={classes.AkcjaButton}
+            color="primary"
+            onClick={onCzytajChapterClick}
+          >
+            <ChromeReaderModeIcon />
+          </IconButton>
+          <IconButton
+            className={classes.AkcjaButton}
+            color="primary"
+            onClick={onUsunMangaClick}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </div>
       </TableCell>
     </TableRow>
   );

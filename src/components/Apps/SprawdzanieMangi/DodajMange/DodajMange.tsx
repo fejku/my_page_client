@@ -104,6 +104,7 @@ const DodajMange: React.FC<Props> = ({
     });
 
     const data = await response.json();
+
     console.log("TODO: Progress podczas dodawania");
     console.log("TODO: Snackbars po dodaniu mangi");
     console.log("Dodano mangę: ", data.mangaNazwa);
@@ -126,7 +127,11 @@ const DodajMange: React.FC<Props> = ({
                 value={link}
                 onChange={onLinkChange}
               />
-              <IconButton type="submit" onClick={onPobierzChapteryClick}>
+              <IconButton
+                className={classes.LinkButton}
+                type="submit"
+                onClick={onPobierzChapteryClick}
+              >
                 <AddBoxIcon />
               </IconButton>
             </div>

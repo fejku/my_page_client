@@ -4,14 +4,17 @@ import { StylesProvider } from "@material-ui/core/styles";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./contexts/AuthContext";
+import { SnackBarProvider } from "./contexts/SnackBarContext";
 import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
     <AuthProvider>
-      <StylesProvider injectFirst>
-        <App />
-      </StylesProvider>
+      <SnackBarProvider>
+        <StylesProvider injectFirst>
+          <App />
+        </StylesProvider>
+      </SnackBarProvider>
     </AuthProvider>
   </React.StrictMode>,
   document.getElementById("root")

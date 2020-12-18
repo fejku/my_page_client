@@ -5,43 +5,40 @@
   color: #1888ff;
 }
 
+.MangaItem {
+  background: oldlace;
+}
+
+.MangaItemNaBiezaco {
+  background: honeydew;
+}
+
 .MangaItem td {
   text-align: center;
   padding: 0;
-  position: relative;
 }
 
-.ChapterButton {
-  vertical-align: unset;
-  border: 1px solid #c4c4c4;
-  border-radius: 4px;
-  padding: 4px;
-  top: 1px;
-}
-
-.ChapterButtonMinus {
-  border-right: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+.ChapterSelectWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ChapterSelect {
   border-radius: 0;
-  font-size: 0.875rem;
-  top: 1px;
+  font-size: inherit;
 }
 
 .ChapterSelect > div {
   padding-top: 8px;
-  padding-bottom: 9px;
-}
-
-.ChapterButtonPlus {
-  border-left: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  padding-bottom: 8px;
 }
 
 .ChapterSelectItem {
   font-size: 0.875rem;
+}
+
+.MangaAkcje {
+  display: flex;
+  justify-content: center;
 }
