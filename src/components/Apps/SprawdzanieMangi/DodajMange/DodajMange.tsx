@@ -177,7 +177,11 @@ const DodajMange: React.FC<Props> = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={onAnulujClick}>Anuluj</Button>
-          <Button onClick={onDodajClick} disabled={czyZapiszAktywne()}>
+          <Button
+            className={classes.ButtonZapisz}
+            onClick={onDodajClick}
+            disabled={czyZapiszAktywne()}
+          >
             Zapisz
           </Button>
         </DialogActions>
