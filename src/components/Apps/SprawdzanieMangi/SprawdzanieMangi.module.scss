@@ -1,4 +1,7 @@
 .SprawdzanieMangi {
+  height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
   padding: 12px;
 }
 
@@ -9,4 +12,11 @@
 
 .MangiTable th {
   text-align: center;
+}
+
+.ProgressWrapper {
+  flex: 1;
+  justify-content: center;
+  display: flex;
+  align-items: center;
 }
