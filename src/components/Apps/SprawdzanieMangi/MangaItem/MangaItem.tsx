@@ -157,8 +157,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     });
 
     if (response.status === 201) {
-      snackBarContext.setMsgSnackBar(`Usunięto mangę: ${manga.nazwa}`);
-      snackBarContext.setOpenSnackBar(true);
+      snackBarContext.show(`Usunięto mangę: ${manga.nazwa}`);
       await getMangi();
     }
   };

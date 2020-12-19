@@ -88,8 +88,18 @@ const DodajMange: React.FC<Props> = ({
     )!.numer;
   };
 
+  const wyszyscForme = () => {
+    setLink("");
+    setNazwa("");
+    setChaptery([]);
+    setWybranyChapter("");
+  };
+
   const onDodajClick = async () => {
     setDodawanieMangi(false);
+    wyszyscForme();
+
+    snackBarContext.show(`Dodawanie mangi: ${nazwa}`, "info");
 
     const zapisanieMangiKryteriaDTO: IZapisanieMangiKryteriaDTO = {
       mangaNazwa: nazwa,
@@ -110,8 +120,7 @@ const DodajMange: React.FC<Props> = ({
 
     console.log("TODO: Progress podczas dodawania");
 
-    snackBarContext.setMsgSnackBar(`Dodano mangę: ${data.mangaNazwa}`);
-    snackBarContext.setOpenSnackBar(true);
+    snackBarContext.show(`Dodano mangę: ${data.mangaNazwa}`);
     await getMangi();
   };
 
