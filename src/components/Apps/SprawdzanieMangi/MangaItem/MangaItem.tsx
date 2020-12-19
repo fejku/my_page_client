@@ -33,6 +33,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(
     manga.ostatnieOdswiezenie
   );
+  const [odswiezanieWTrakcie, setOdswiezanieWTrakcie] = useState(false);
 
   useEffect(() => {
     if (manga && manga._id) {
@@ -94,6 +95,8 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const odswiezMange = async () => {
+    setOdswiezanieWTrakcie(true);
+
     const response = await fetch(
       `/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`
     );
@@ -102,6 +105,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
 
     setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
     setChaptery(data.chaptery);
+    setOdswiezanieWTrakcie(false);
   };
 
   const onPrevChapterClick = () => {
@@ -219,7 +223,9 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
       <TableCell>
         <div className={classes.MangaAkcje}>
           <IconButton
-            className={classes.AkcjaButton}
+            className={clsx(classes.AkcjaButton, {
+              [classes.OdswiezMangeRotate]: odswiezanieWTrakcie,
+            })}
             color="primary"
             onClick={onOdswiezChapterClick}
           >

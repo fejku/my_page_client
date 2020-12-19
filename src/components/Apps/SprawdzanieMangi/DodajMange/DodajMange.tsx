@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import clsx from "clsx";
 import {
   Button,
   Dialog,
@@ -140,7 +141,7 @@ const DodajMange: React.FC<Props> = ({
                 onChange={onLinkChange}
               />
               <IconButton
-                className={classes.LinkButton}
+                className={clsx({ [classes.LinkButton]: link })}
                 type="submit"
                 onClick={onPobierzChapteryClick}
               >
