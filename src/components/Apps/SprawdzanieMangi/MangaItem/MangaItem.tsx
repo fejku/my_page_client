@@ -1,14 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 import moment from "moment";
-import {
-  IconButton,
-  Link,
-  MenuItem,
-  Select,
-  TableCell,
-  TableRow,
-} from "@material-ui/core";
+import { IconButton, Link, MenuItem, Select, TableCell, TableRow } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -30,9 +23,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
 
   const [aktualnyChapter, setAktualnyChapter] = useState(manga.ostatniChapter);
   const [chaptery, setChaptery] = useState(manga.chaptery);
-  const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(
-    manga.ostatnieOdswiezenie
-  );
+  const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(manga.ostatnieOdswiezenie);
   const [odswiezanieWTrakcie, setOdswiezanieWTrakcie] = useState(false);
 
   useEffect(() => {
@@ -61,27 +52,22 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
   };
 
-  const czyChapterMinusNieaktywny = () => {
-    return (
-      aktualnyChapter.localeCompare(chaptery[chaptery.length - 1].numer) === 0
-    );
+  const czyAktualnyChapterPierwszy = () => {
+    return aktualnyChapter.localeCompare(chaptery[chaptery.length - 1].numer) === 0;
   };
 
-  const czyChapterPlusNieaktywny = () => {
+  const czyAktualnyChapterOstatni = () => {
     return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
   };
 
   const zmienAktualnyChapter = async () => {
-    const response = await fetch(
-      `/apps/sprawdzanie-mangi/manga/${manga._id}/`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ostatniChapter: aktualnyChapter }),
-      }
-    );
+    const response = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}/`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ostatniChapter: aktualnyChapter }),
+    });
 
     const data: IManga = await response.json();
 
@@ -89,17 +75,13 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const dajKolejnoscAktualnegoChaptera = () => {
-    return chaptery.find(
-      (chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0
-    )!.kolejnosc;
+    return chaptery.find((chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0)!.kolejnosc;
   };
 
   const odswiezMange = async () => {
     setOdswiezanieWTrakcie(true);
 
-    const response = await fetch(
-      `/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`
-    );
+    const response = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`);
     const data: IOdswiezenieMangiWynikDTO = await response.json();
     console.log(data);
 
@@ -111,9 +93,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const onPrevChapterClick = () => {
     const kolejnoscAktualnegoChaptera = dajKolejnoscAktualnegoChaptera();
 
-    const prevNumer = chaptery.find(
-      (chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera - 1
-    )!.numer;
+    const prevNumer = chaptery.find((chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera - 1)!.numer;
 
     setAktualnyChapter(prevNumer);
   };
@@ -121,16 +101,12 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const onNextChapterClick = () => {
     const kolejnoscAktualnegoChaptera = dajKolejnoscAktualnegoChaptera();
 
-    const nextNumer = chaptery.find(
-      (chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera + 1
-    )!.numer;
+    const nextNumer = chaptery.find((chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera + 1)!.numer;
 
     setAktualnyChapter(nextNumer);
   };
 
-  const onChapterySelectChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
+  const onChapterySelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setAktualnyChapter(event.target.value as string);
   };
 
@@ -139,18 +115,14 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const onCzytajChapterClick = () => {
-    if (aktualnyChapter.localeCompare(chaptery[0].numer) === 0) {
-      const urlNajnowszyChapter = chaptery.find(
-        (chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0
-      )!.url;
+    if (czyAktualnyChapterPierwszy() || czyAktualnyChapterOstatni()) {
+      const urlChapter = chaptery.find((chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0)!.url;
 
-      window.open(urlNajnowszyChapter, "_blank");
+      window.open(urlChapter, "_blank");
     } else {
       const kolejnosc = dajKolejnoscAktualnegoChaptera() + 1;
 
-      const urlNastepny = chaptery.find(
-        (chapter) => chapter.kolejnosc === kolejnosc
-      )!.url;
+      const urlNastepny = chaptery.find((chapter) => chapter.kolejnosc === kolejnosc)!.url;
       window.open(urlNastepny, "_blank");
     }
   };
@@ -174,22 +146,13 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
       })}
     >
       <TableCell>
-        <Link
-          className={classes.MangaItemLink}
-          href={manga.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <Link className={classes.MangaItemLink} href={manga.url} target="_blank" rel="noopener noreferrer">
           {manga.nazwa}
         </Link>
       </TableCell>
       <TableCell>
         <div className={classes.ChapterSelectWrapper}>
-          <IconButton
-            color="primary"
-            disabled={czyChapterMinusNieaktywny()}
-            onClick={onPrevChapterClick}
-          >
+          <IconButton color="primary" disabled={czyAktualnyChapterPierwszy()} onClick={onPrevChapterClick}>
             <RemoveIcon />
           </IconButton>
           <Select
@@ -200,20 +163,12 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
             onChange={onChapterySelectChange}
           >
             {chaptery.map((chapter) => (
-              <MenuItem
-                key={chapter._id}
-                className={classes.ChapterSelectItem}
-                value={chapter.numer}
-              >
+              <MenuItem key={chapter._id} className={classes.ChapterSelectItem} value={chapter.numer}>
                 {chapter.numer}
               </MenuItem>
             ))}
           </Select>
-          <IconButton
-            color="primary"
-            disabled={czyChapterPlusNieaktywny()}
-            onClick={onNextChapterClick}
-          >
+          <IconButton color="primary" disabled={czyAktualnyChapterOstatni()} onClick={onNextChapterClick}>
             <AddIcon />
           </IconButton>
         </div>
@@ -231,18 +186,10 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
           >
             <SyncIcon />
           </IconButton>
-          <IconButton
-            className={classes.AkcjaButton}
-            color="primary"
-            onClick={onCzytajChapterClick}
-          >
+          <IconButton className={classes.AkcjaButton} color="primary" onClick={onCzytajChapterClick}>
             <ChromeReaderModeIcon />
           </IconButton>
-          <IconButton
-            className={classes.AkcjaButton}
-            color="primary"
-            onClick={onUsunMangaClick}
-          >
+          <IconButton className={classes.AkcjaButton} color="primary" onClick={onUsunMangaClick}>
             <DeleteIcon />
           </IconButton>
         </div>
