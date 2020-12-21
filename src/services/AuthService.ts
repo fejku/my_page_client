@@ -14,6 +14,7 @@ class AuthService {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
 
     if (response.status !== 401) {
