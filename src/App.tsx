@@ -16,7 +16,7 @@ const App: React.FC<Props> = (props) => {
   moment.locale("pl");
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Navbar />
       <Switch>
         <Route exact path="/" component={Home} />
