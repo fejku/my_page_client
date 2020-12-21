@@ -1,3 +1,4 @@
+import { BASE_URL } from "../config/config";
 import ILoginResponse from "../interfaces/ILoginResponse";
 import ILoginResult from "../interfaces/ILoginResult";
 import ILoginUser from "../interfaces/ILoginUser";
@@ -7,7 +8,7 @@ import IRegisterUser from "../interfaces/IRegisterUser";
 
 class AuthService {
   public static login = async (user: ILoginUser): Promise<ILoginResult> => {
-    const response = await fetch("/auth/login", {
+    const response = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
       body: JSON.stringify(user),
       headers: {
@@ -23,10 +24,8 @@ class AuthService {
     }
   };
 
-  public static register = async (
-    user: IRegisterUser
-  ): Promise<IRegisterResult> => {
-    const response = await fetch("/auth/register", {
+  public static register = async (user: IRegisterUser): Promise<IRegisterResult> => {
+    const response = await fetch(`${BASE_URL}/auth/register`, {
       method: "POST",
       body: JSON.stringify(user),
       headers: {
@@ -43,13 +42,16 @@ class AuthService {
   };
 
   public static logout = async () => {
-    const response = await fetch("/auth/logout");
+    const response = await fetch(`${BASE_URL}/auth/logout`);
     const data = await response.json();
     return data;
   };
 
   public static isAuthenticated = async () => {
-    const response = await fetch("/auth/authenticated");
+    console.log(process.env);
+    console.log(`${BASE_URL}/auth/authenticated`);
+
+    const response = await fetch(`${BASE_URL}/auth/authenticated`);
     if (response.status !== 401) {
       const data = await response.json();
       return data;

@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
+import { BASE_URL } from "../../../../config/config";
+import classes from "./DodajMange.module.scss";
 import {
   Button,
   Dialog,
@@ -14,7 +16,6 @@ import {
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import DodajButton from "../../../Common/DodajButton/DodajButton";
-import classes from "./DodajMange.module.scss";
 import IPobieranieChapterowWynikDTO, {
   IPobieranieChapterowChapterDTO,
 } from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieChapterowWynikDTO";
@@ -26,17 +27,12 @@ interface Props {
   getMangi: () => Promise<void>;
 }
 
-const DodajMange: React.FC<Props> = ({
-  dodawanieState: [dodawanieMangi, setDodawanieMangi],
-  getMangi,
-}) => {
+const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodawanieMangi], getMangi }) => {
   const snackBarContext = useContext(SnackBarContext);
 
   const [link, setLink] = useState("");
   const [nazwa, setNazwa] = useState("");
-  const [chaptery, setChaptery] = useState<IPobieranieChapterowChapterDTO[]>(
-    []
-  );
+  const [chaptery, setChaptery] = useState<IPobieranieChapterowChapterDTO[]>([]);
   const [wybranyChapter, setWybranyChapter] = useState("");
 
   useEffect(() => {
@@ -56,7 +52,7 @@ const DodajMange: React.FC<Props> = ({
   const onPobierzChapteryClick = async () => {
     setWybranyChapter("");
 
-    const response = await fetch("/apps/sprawdzanie-mangi/chapter/url", {
+    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/chapter/url`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,10 +79,7 @@ const DodajMange: React.FC<Props> = ({
   };
 
   const dajAktualnyChapter = () => {
-    return chaptery.find(
-      (chapter) =>
-        chapter.kolejnosc.toString().localeCompare(wybranyChapter) === 0
-    )!.numer;
+    return chaptery.find((chapter) => chapter.kolejnosc.toString().localeCompare(wybranyChapter) === 0)!.numer;
   };
 
   const wyszyscForme = () => {
@@ -109,7 +102,7 @@ const DodajMange: React.FC<Props> = ({
       chaptery,
     };
 
-    const response = await fetch("/apps/sprawdzanie-mangi/manga", {
+    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -151,12 +144,7 @@ const DodajMange: React.FC<Props> = ({
           </div>
           <div className={classes.Wrapper}>
             <span className={classes.Label}>Nazwa</span>
-            <TextField
-              variant="outlined"
-              margin="dense"
-              disabled
-              value={nazwa}
-            />
+            <TextField variant="outlined" margin="dense" disabled value={nazwa} />
           </div>
           <div className={classes.Wrapper}>
             <span className={classes.Label}>Chaptery</span>
@@ -178,11 +166,7 @@ const DodajMange: React.FC<Props> = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={onAnulujClick}>Anuluj</Button>
-          <Button
-            className={classes.ButtonZapisz}
-            onClick={onDodajClick}
-            disabled={czyZapiszAktywne()}
-          >
+          <Button className={classes.ButtonZapisz} onClick={onDodajClick} disabled={czyZapiszAktywne()}>
             Zapisz
           </Button>
         </DialogActions>

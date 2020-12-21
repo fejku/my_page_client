@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { BASE_URL } from "../../../config/config";
+import classes from "./SprawdzanieMangi.module.scss";
 import {
   Button,
   CircularProgress,
@@ -13,7 +15,6 @@ import IManga from "../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
-import classes from "./SprawdzanieMangi.module.scss";
 import { sleepRand } from "../../Common/CommonHelper";
 
 interface Props {}
@@ -29,11 +30,11 @@ const SprawdzanieMangi = (props: Props) => {
   }, []);
 
   const getMangi = async () => {
-    const responseManga = await fetch("/apps/sprawdzanie-mangi/manga");
+    const responseManga = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga`);
     const dataMangi: IManga[] = await responseManga.json();
 
     for (const manga of dataMangi) {
-      const responseChapter = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
+      const responseChapter = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
       const dataChaptery: IChapter[] = await responseChapter.json();
       manga.chaptery = dataChaptery;
     }

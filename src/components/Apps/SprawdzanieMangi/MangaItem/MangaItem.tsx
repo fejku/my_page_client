@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 import moment from "moment";
+import { BASE_URL } from "../../../../config/config";
+import classes from "./MangaItem.module.scss";
 import { IconButton, Link, MenuItem, Select, TableCell, TableRow } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -10,7 +12,6 @@ import SyncIcon from "@material-ui/icons/Sync";
 import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IOdswiezenieMangiWynikDTO";
 import { SnackBarContext } from "../../../../contexts/SnackBarContext";
-import classes from "./MangaItem.module.scss";
 
 interface Props {
   manga: IManga;
@@ -61,7 +62,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const zmienAktualnyChapter = async () => {
-    const response = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}/`, {
+    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +82,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const odswiezMange = async () => {
     setOdswiezanieWTrakcie(true);
 
-    const response = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`);
+    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`);
     const data: IOdswiezenieMangiWynikDTO = await response.json();
     console.log(data);
 
@@ -128,7 +129,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const onUsunMangaClick = async () => {
-    const response = await fetch(`/apps/sprawdzanie-mangi/manga/${manga._id}`, {
+    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}`, {
       method: "DELETE",
     });
 
