@@ -10,10 +10,7 @@ interface Props {}
 const AuthenticatedNavBar: React.FC<Props> = (props) => {
   const { setIsAuthenticated, user, setUser } = useContext(AuthContext);
 
-  const [
-    anchorProfileEl,
-    setAnchorProfileEl,
-  ] = React.useState<null | HTMLElement>(null);
+  const [anchorProfileEl, setAnchorProfileEl] = React.useState<null | HTMLElement>(null);
 
   const onProfileClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorProfileEl(event.currentTarget);
@@ -25,14 +22,10 @@ const AuthenticatedNavBar: React.FC<Props> = (props) => {
 
   const onClickLogout = async () => {
     setAnchorProfileEl(null);
-    try {
-      const data = await AuthService.logout();
 
-      if (data.success) {
-        setUser(data.user);
-        setIsAuthenticated(false);
-      }
-    } catch (error) {}
+    AuthService.logout();
+    setUser({ username: "", role: "" });
+    setIsAuthenticated(false);
   };
 
   return (
@@ -47,12 +40,7 @@ const AuthenticatedNavBar: React.FC<Props> = (props) => {
           {user.username.charAt(0).toUpperCase()}
         </div>
       </li>
-      <Menu
-        anchorEl={anchorProfileEl}
-        keepMounted
-        open={Boolean(anchorProfileEl)}
-        onClose={onProfileClose}
-      >
+      <Menu anchorEl={anchorProfileEl} keepMounted open={Boolean(anchorProfileEl)} onClose={onProfileClose}>
         <MenuItem onClick={onProfileClose}>Profile</MenuItem>
         <MenuItem onClick={onClickLogout}>Logout</MenuItem>
       </Menu>

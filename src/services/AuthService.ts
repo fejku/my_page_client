@@ -10,15 +10,17 @@ class AuthService {
   public static login = async (user: ILoginUser): Promise<ILoginResult> => {
     const response = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
-      body: JSON.stringify(user),
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      body: JSON.stringify(user),
     });
 
     if (response.status !== 401) {
       const data: ILoginResponse = await response.json();
+
+      localStorage.setItem("user", JSON.stringify(data));
+
       return data;
     } else {
       return { isAuthenticated: false };
@@ -42,10 +44,8 @@ class AuthService {
     }
   };
 
-  public static logout = async () => {
-    const response = await fetch(`${BASE_URL}/auth/logout`);
-    const data = await response.json();
-    return data;
+  public static logout = () => {
+    localStorage.removeItem("user");
   };
 
   public static isAuthenticated = async () => {
