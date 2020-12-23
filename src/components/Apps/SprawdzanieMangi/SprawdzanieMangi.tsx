@@ -16,6 +16,7 @@ import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
 import { sleepRand } from "../../Common/CommonHelper";
+import AuthHeader from "../../../services/AuthHeader";
 
 interface Props {}
 
@@ -30,11 +31,15 @@ const SprawdzanieMangi = (props: Props) => {
   }, []);
 
   const getMangi = async () => {
-    const responseManga = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga`);
+    const responseManga = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga`, {
+      headers: AuthHeader.getAuthHeader(),
+    });
     const dataMangi: IManga[] = await responseManga.json();
 
     for (const manga of dataMangi) {
-      const responseChapter = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
+      const responseChapter = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`, {
+        headers: AuthHeader.getAuthHeader(),
+      });
       const dataChaptery: IChapter[] = await responseChapter.json();
       manga.chaptery = dataChaptery;
     }
@@ -68,7 +73,7 @@ const SprawdzanieMangi = (props: Props) => {
           </TableHead>
           <TableBody className={classes.Test}>
             {mangi.map((manga) => (
-              <MangaItem manga={manga} getMangi={getMangi} odswiezanaManga={odswiezanaManga} />
+              <MangaItem key={manga._id} manga={manga} getMangi={getMangi} odswiezanaManga={odswiezanaManga} />
             ))}
           </TableBody>
         </Table>

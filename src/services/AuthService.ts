@@ -5,6 +5,7 @@ import ILoginUser from "../interfaces/ILoginUser";
 import IRegisterResponse from "../interfaces/IRegisterResponse";
 import IRegisterResult from "../interfaces/IRegisterResult";
 import IRegisterUser from "../interfaces/IRegisterUser";
+import AuthHeader from "./AuthHeader";
 
 class AuthService {
   public static login = async (user: ILoginUser): Promise<ILoginResult> => {
@@ -49,10 +50,7 @@ class AuthService {
   };
 
   public static isAuthenticated = async () => {
-    console.log(process.env);
-    console.log(`${BASE_URL}/auth/authenticated`);
-
-    const response = await fetch(`${BASE_URL}/auth/authenticated`);
+    const response = await fetch(`${BASE_URL}/auth/authenticated`, { headers: AuthHeader.getAuthHeader() });
     if (response.status !== 401) {
       const data = await response.json();
       return data;

@@ -12,6 +12,7 @@ import SyncIcon from "@material-ui/icons/Sync";
 import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IOdswiezenieMangiWynikDTO";
 import { SnackBarContext } from "../../../../contexts/SnackBarContext";
+import AuthHeader from "../../../../services/AuthHeader";
 
 interface Props {
   manga: IManga;
@@ -66,6 +67,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        ...AuthHeader.getAuthHeader(),
       },
       body: JSON.stringify({ ostatniChapter: aktualnyChapter }),
     });
@@ -82,7 +84,9 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const odswiezMange = async () => {
     setOdswiezanieWTrakcie(true);
 
-    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`);
+    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`, {
+      headers: AuthHeader.getAuthHeader(),
+    });
     const data: IOdswiezenieMangiWynikDTO = await response.json();
     console.log(data);
 
@@ -131,6 +135,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const onUsunMangaClick = async () => {
     const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}`, {
       method: "DELETE",
+      headers: AuthHeader.getAuthHeader(),
     });
 
     if (response.status === 201) {

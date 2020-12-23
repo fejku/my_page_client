@@ -21,6 +21,7 @@ import IPobieranieChapterowWynikDTO, {
 } from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieChapterowWynikDTO";
 import IZapisanieMangiKryteriaDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IZapisanieMangiKryteriaDTO";
 import { SnackBarContext } from "../../../../contexts/SnackBarContext";
+import AuthHeader from "../../../../services/AuthHeader";
 
 interface Props {
   dodawanieState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
@@ -56,6 +57,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...AuthHeader.getAuthHeader(),
       },
       body: JSON.stringify({ url: link }),
     });
@@ -106,6 +108,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...AuthHeader.getAuthHeader(),
       },
       body: JSON.stringify(zapisanieMangiKryteriaDTO),
     });
