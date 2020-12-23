@@ -50,16 +50,12 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     }
   }, [aktualnyChapter]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const czyMangaNaBiezaco = () => {
-    return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
-  };
-
   const czyAktualnyChapterPierwszy = () => {
-    return aktualnyChapter.localeCompare(chaptery[chaptery.length - 1].numer) === 0;
+    return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
   };
 
   const czyAktualnyChapterOstatni = () => {
-    return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
+    return aktualnyChapter.localeCompare(chaptery[chaptery.length - 1].numer) === 0;
   };
 
   const zmienAktualnyChapter = async () => {
@@ -148,7 +144,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     <TableRow
       key={manga._id}
       className={clsx(classes.MangaItem, {
-        [classes.MangaItemNaBiezaco]: czyMangaNaBiezaco(),
+        [classes.MangaItemNaBiezaco]: czyAktualnyChapterOstatni(),
       })}
     >
       <TableCell>
@@ -168,7 +164,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
             value={aktualnyChapter}
             onChange={onChapterySelectChange}
           >
-            {chaptery.map((chapter) => (
+            {chaptery.reverse().map((chapter) => (
               <MenuItem key={chapter._id} className={classes.ChapterSelectItem} value={chapter.numer}>
                 {chapter.numer}
               </MenuItem>
@@ -179,7 +175,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
           </IconButton>
         </div>
       </TableCell>
-      <TableCell>{chaptery[0].numer}</TableCell>
+      <TableCell>{chaptery[chaptery.length - 1].numer}</TableCell>
       <TableCell>{moment.utc(ostatnieOdswiezenie).fromNow()}</TableCell>
       <TableCell>
         <div className={classes.MangaAkcje}>

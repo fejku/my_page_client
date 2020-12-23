@@ -38,7 +38,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
 
   useEffect(() => {
     if (chaptery && chaptery.length > 0) {
-      setWybranyChapter(chaptery[0].kolejnosc.toString());
+      setWybranyChapter(chaptery[chaptery.length - 1].kolejnosc.toString());
     }
   }, [chaptery]);
 
@@ -159,7 +159,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
               onChange={onChapterChange}
             >
               {chaptery &&
-                chaptery.map((chapter) => (
+                chaptery.reverse().map((chapter) => (
                   <MenuItem key={chapter.kolejnosc} value={chapter.kolejnosc}>
                     {chapter.numer}
                   </MenuItem>
