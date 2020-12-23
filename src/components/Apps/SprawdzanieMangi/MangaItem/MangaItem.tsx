@@ -164,7 +164,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
             value={aktualnyChapter}
             onChange={onChapterySelectChange}
           >
-            {chaptery.reverse().map((chapter) => (
+            {[...chaptery].reverse().map((chapter) => (
               <MenuItem key={chapter._id} className={classes.ChapterSelectItem} value={chapter.numer}>
                 {chapter.numer}
               </MenuItem>

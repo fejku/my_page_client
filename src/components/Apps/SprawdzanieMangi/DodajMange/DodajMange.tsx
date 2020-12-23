@@ -159,7 +159,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
               onChange={onChapterChange}
             >
               {chaptery &&
-                chaptery.reverse().map((chapter) => (
+                [...chaptery].reverse().map((chapter) => (
                   <MenuItem key={chapter.kolejnosc} value={chapter.kolejnosc}>
                     {chapter.numer}
                   </MenuItem>
