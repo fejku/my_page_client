@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../../../config/config";
 import classes from "./SprawdzanieMangi.module.scss";
 import {
   Button,
@@ -16,7 +15,7 @@ import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
 import { sleepRand } from "../../Common/CommonHelper";
-import AuthHeader from "../../../services/AuthHeader";
+import axios from "../../Common/AxiosHelper";
 
 interface Props {}
 
@@ -31,16 +30,12 @@ const SprawdzanieMangi = (props: Props) => {
   }, []);
 
   const getMangi = async () => {
-    const responseManga = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga`, {
-      headers: AuthHeader.getAuthHeader(),
-    });
-    const dataMangi: IManga[] = await responseManga.json();
+    const responseManga = await axios.get(`/apps/sprawdzanie-mangi/manga`);
+    const dataMangi: IManga[] = responseManga.data;
 
     for (const manga of dataMangi) {
-      const responseChapter = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`, {
-        headers: AuthHeader.getAuthHeader(),
-      });
-      const dataChaptery: IChapter[] = await responseChapter.json();
+      const responseChapter = await axios.get(`/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
+      const dataChaptery: IChapter[] = responseChapter.data;
       manga.chaptery = dataChaptery;
     }
 

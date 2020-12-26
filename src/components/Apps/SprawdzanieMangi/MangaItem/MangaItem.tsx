@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 import moment from "moment";
-import { BASE_URL } from "../../../../config/config";
 import classes from "./MangaItem.module.scss";
 import { IconButton, Link, MenuItem, Select, TableCell, TableRow } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
@@ -59,18 +58,16 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const zmienAktualnyChapter = async () => {
-    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthHeader.getAuthHeader(),
-      },
-      body: JSON.stringify({ ostatniChapter: aktualnyChapter }),
-    });
-
-    const data: IManga = await response.json();
-
-    manga.ostatniChapter = data.ostatniChapter;
+    // const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/`, {
+    //   method: "PUT",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     ...AuthHeader.getAuthHeader(),
+    //   },
+    //   body: JSON.stringify({ ostatniChapter: aktualnyChapter }),
+    // });
+    // const data: IManga = await response.json();
+    // manga.ostatniChapter = data.ostatniChapter;
   };
 
   const dajKolejnoscAktualnegoChaptera = () => {
@@ -78,17 +75,15 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const odswiezMange = async () => {
-    setOdswiezanieWTrakcie(true);
-
-    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`, {
-      headers: AuthHeader.getAuthHeader(),
-    });
-    const data: IOdswiezenieMangiWynikDTO = await response.json();
-    console.log(data);
-
-    setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
-    setChaptery(data.chaptery);
-    setOdswiezanieWTrakcie(false);
+    // setOdswiezanieWTrakcie(true);
+    // const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`, {
+    //   headers: AuthHeader.getAuthHeader(),
+    // });
+    // const data: IOdswiezenieMangiWynikDTO = await response.json();
+    // console.log(data);
+    // setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
+    // setChaptery(data.chaptery);
+    // setOdswiezanieWTrakcie(false);
   };
 
   const onPrevChapterClick = () => {
@@ -129,15 +124,14 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const onUsunMangaClick = async () => {
-    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}`, {
-      method: "DELETE",
-      headers: AuthHeader.getAuthHeader(),
-    });
-
-    if (response.status === 201) {
-      snackBarContext.show(`Usunięto mangę: ${manga.nazwa}`);
-      await getMangi();
-    }
+    // const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}`, {
+    //   method: "DELETE",
+    //   headers: AuthHeader.getAuthHeader(),
+    // });
+    // if (response.status === 201) {
+    //   snackBarContext.show(`Usunięto mangę: ${manga.nazwa}`);
+    //   await getMangi();
+    // }
   };
 
   return (

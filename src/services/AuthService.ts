@@ -1,24 +1,16 @@
-import { BASE_URL } from "../config/config";
+import myAxios from "../components/Common/AxiosHelper";
 import ILoginResponse from "../interfaces/ILoginResponse";
 import ILoginResult from "../interfaces/ILoginResult";
 import ILoginUser from "../interfaces/ILoginUser";
 import IRegisterResponse from "../interfaces/IRegisterResponse";
 import IRegisterResult from "../interfaces/IRegisterResult";
 import IRegisterUser from "../interfaces/IRegisterUser";
-import AuthHeader from "./AuthHeader";
 
 class AuthService {
   public static login = async (user: ILoginUser): Promise<ILoginResult> => {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
+    const response = await myAxios.post(`/auth/login`, user);
     if (response.status !== 401) {
-      const data: ILoginResponse = await response.json();
+      const data: ILoginResponse = response.data;
 
       localStorage.setItem("user", JSON.stringify(data));
 
@@ -29,14 +21,8 @@ class AuthService {
   };
 
   public static register = async (user: IRegisterUser): Promise<IRegisterResult> => {
-    const response = await fetch(`${BASE_URL}/auth/register`, {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data: IRegisterResponse = await response.json();
+    const response = await myAxios.post(`/auth/register`, user);
+    const data: IRegisterResponse = response.data;
 
     if (response.status === 201) {
       return { success: true, message: data.message };
@@ -50,10 +36,9 @@ class AuthService {
   };
 
   public static isAuthenticated = async () => {
-    const response = await fetch(`${BASE_URL}/auth/authenticated`, { headers: AuthHeader.getAuthHeader() });
+    const response = await myAxios.get(`/auth/authenticated`);
     if (response.status !== 401) {
-      const data = await response.json();
-      return data;
+      return response.data;
     } else {
       return {
         isAuthenticated: false,

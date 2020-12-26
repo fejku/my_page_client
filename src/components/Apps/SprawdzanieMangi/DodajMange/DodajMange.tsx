@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
-import { BASE_URL } from "../../../../config/config";
 import classes from "./DodajMange.module.scss";
 import {
   Button,
@@ -16,12 +15,15 @@ import {
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import DodajButton from "../../../Common/DodajButton/DodajButton";
-import IPobieranieChapterowWynikDTO, {
-  IPobieranieChapterowChapterDTO,
-} from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieChapterowWynikDTO";
-import IZapisanieMangiKryteriaDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IZapisanieMangiKryteriaDTO";
+import IZapisanieMangiKryteriaDTO, {
+  IZapisanieMangiKryteriaDTOManga,
+} from "../../../../interfaces/apps/sprawdzanie-mangi/IZapisanieMangiKryteriaDTO";
 import { SnackBarContext } from "../../../../contexts/SnackBarContext";
-import AuthHeader from "../../../../services/AuthHeader";
+import myAxios from "../../../Common/AxiosHelper";
+import IPobieranieMangiWynikDTO, {
+  IPobieranieMangiWynikDTOChapter,
+} from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieMangiWynikDTO";
+import IPobieranieMangiKryteriaDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieMangiKryteriaDTO";
 
 interface Props {
   dodawanieState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
@@ -31,9 +33,10 @@ interface Props {
 const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodawanieMangi], getMangi }) => {
   const snackBarContext = useContext(SnackBarContext);
 
-  const [link, setLink] = useState("");
-  const [nazwa, setNazwa] = useState("");
-  const [chaptery, setChaptery] = useState<IPobieranieChapterowChapterDTO[]>([]);
+  const [url, setUrl] = useState("");
+  const [tytul, setTytul] = useState("");
+  const [okladka, setOkladka] = useState("");
+  const [chaptery, setChaptery] = useState<IPobieranieMangiWynikDTOChapter[]>([]);
   const [wybranyChapter, setWybranyChapter] = useState("");
 
   useEffect(() => {
@@ -46,26 +49,20 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
     setDodawanieMangi(true);
   };
 
-  const onLinkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLink(event.target.value);
+  const onUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(event.target.value);
   };
 
-  const onPobierzChapteryClick = async () => {
+  const onPobierzDaneMangiClick = async () => {
     setWybranyChapter("");
 
-    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/chapter/url`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthHeader.getAuthHeader(),
-      },
-      body: JSON.stringify({ url: link }),
-    });
+    const kryteria: IPobieranieMangiKryteriaDTO = { url };
+    const response = await myAxios.post(`/apps/sprawdzanie-mangi/manga/pobierz-dane`, kryteria);
+    const data: IPobieranieMangiWynikDTO = response.data;
 
-    const data: IPobieranieChapterowWynikDTO = await response.json();
-
-    setNazwa(data.nazwaMangi);
+    setTytul(data.manga.tytul);
     setChaptery(data.chaptery);
+    setOkladka(data.manga.okladka);
   };
 
   const onChapterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -85,8 +82,8 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
   };
 
   const wyszyscForme = () => {
-    setLink("");
-    setNazwa("");
+    setUrl("");
+    setTytul("");
     setChaptery([]);
     setWybranyChapter("");
   };
@@ -95,30 +92,35 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
     setDodawanieMangi(false);
     wyszyscForme();
 
-    snackBarContext.show(`Dodawanie mangi: ${nazwa}`, "info");
+    snackBarContext.show(`Dodawanie mangi: ${tytul}`, "info");
+
+    const zapisanieMangiKryteriaDTOManga: IZapisanieMangiKryteriaDTOManga = {
+      tytul,
+      okladka,
+      url,
+      aktualnyChapter: dajAktualnyChapter(),
+    };
 
     const zapisanieMangiKryteriaDTO: IZapisanieMangiKryteriaDTO = {
-      mangaNazwa: nazwa,
-      mangaUrl: link,
-      mangaAktualnyChapter: dajAktualnyChapter(),
+      manga: zapisanieMangiKryteriaDTOManga,
       chaptery,
     };
 
-    const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...AuthHeader.getAuthHeader(),
-      },
-      body: JSON.stringify(zapisanieMangiKryteriaDTO),
+    const response = await myAxios.post(`/apps/sprawdzanie-mangi/manga`, zapisanieMangiKryteriaDTO);
+    const data = response.data;
+
+    snackBarContext.show(`Dodano mangę: ${data.tytul}`);
+  };
+
+  const dajChapteryDoSelect = () => {
+    const chapteryDoSelecta = [...chaptery].reverse();
+    chapteryDoSelecta.push({
+      url: "",
+      dataDodania: "",
+      numer: "-",
+      kolejnosc: 0,
     });
-
-    const data = await response.json();
-
-    console.log("TODO: Progress podczas dodawania");
-
-    snackBarContext.show(`Dodano mangę: ${data.mangaNazwa}`);
-    await getMangi();
+    return chapteryDoSelecta;
   };
 
   return (
@@ -129,17 +131,17 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
         <DialogContent dividers>
           <div className={classes.Wrapper}>
             <span className={classes.Label}>Url</span>
-            <div className={classes.Link}>
+            <div className={classes.Url}>
               <InputBase
-                className={classes.LinkInput}
-                placeholder="Link do mangi"
-                value={link}
-                onChange={onLinkChange}
+                className={classes.UrlInput}
+                placeholder="Url mangi do pobrania"
+                value={url}
+                onChange={onUrlChange}
               />
               <IconButton
-                className={clsx({ [classes.LinkButton]: link })}
+                className={clsx({ [classes.UrlButton]: url })}
                 type="submit"
-                onClick={onPobierzChapteryClick}
+                onClick={onPobierzDaneMangiClick}
               >
                 <AddBoxIcon />
               </IconButton>
@@ -147,7 +149,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
           </div>
           <div className={classes.Wrapper}>
             <span className={classes.Label}>Nazwa</span>
-            <TextField variant="outlined" margin="dense" disabled value={nazwa} />
+            <TextField className={classes.TytulInput} variant="outlined" margin="dense" disabled value={tytul} />
           </div>
           <div className={classes.Wrapper}>
             <span className={classes.Label}>Chaptery</span>
@@ -159,7 +161,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
               onChange={onChapterChange}
             >
               {chaptery &&
-                [...chaptery].reverse().map((chapter) => (
+                dajChapteryDoSelect().map((chapter) => (
                   <MenuItem key={chapter.kolejnosc} value={chapter.kolejnosc}>
                     {chapter.numer}
                   </MenuItem>

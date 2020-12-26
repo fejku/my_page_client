@@ -7,19 +7,24 @@
   width: 8ch;
 }
 
-.Link {
+.Url {
   display: flex;
   border: 1px solid rgba(0, 0, 0, 0.23);
   border-radius: 8px;
+  flex: 1;
 }
 
-.LinkInput {
+.UrlInput {
   flex: 1;
   padding-left: 12px;
 }
 
-.LinkButton {
+.UrlButton {
   color: #1888ff;
+}
+
+.TytulInput {
+  flex: 1;
 }
 
 .ButtonZapisz {
