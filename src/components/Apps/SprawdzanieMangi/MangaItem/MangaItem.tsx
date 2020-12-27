@@ -53,10 +53,6 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     return aktualnyChapter.localeCompare("-") === 0;
   };
 
-  const czyAktualnyChapterPierwszy = () => {
-    return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
-  };
-
   const czyAktualnyChapterOstatni = () => {
     return aktualnyChapter.localeCompare(chaptery[chaptery.length - 1].numer) === 0;
   };
@@ -79,7 +75,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     setOdswiezanieWTrakcie(true);
     const response = await myAxios.get(`/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`);
     const data: IOdswiezenieMangiWynikDTO = response.data;
-    console.log(data);
+
     setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
     setChaptery(data.chaptery);
     setOdswiezanieWTrakcie(false);

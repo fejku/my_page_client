@@ -78,10 +78,13 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
   };
 
   const dajAktualnyChapter = () => {
+    if ("-1".localeCompare(wybranyChapter) === 0) {
+      return "-";
+    }
     return chaptery.find((chapter) => chapter.kolejnosc.toString().localeCompare(wybranyChapter) === 0)!.numer;
   };
 
-  const wyszyscForme = () => {
+  const wyczyscForme = () => {
     setUrl("");
     setTytul("");
     setChaptery([]);
@@ -89,11 +92,6 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
   };
 
   const onDodajClick = async () => {
-    setDodawanieMangi(false);
-    wyszyscForme();
-
-    snackBarContext.show(`Dodawanie mangi: ${tytul}`, "info");
-
     const zapisanieMangiKryteriaDTOManga: IZapisanieMangiKryteriaDTOManga = {
       tytul,
       okladka,
@@ -106,10 +104,16 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
       chaptery,
     };
 
+    setDodawanieMangi(false);
+    wyczyscForme();
+
+    snackBarContext.show(`Dodawanie mangi: ${tytul}`, "info");
+
     const response = await myAxios.post(`/apps/sprawdzanie-mangi/manga`, zapisanieMangiKryteriaDTO);
     const data = response.data;
 
     snackBarContext.show(`Dodano mangę: ${data.tytul}`);
+    await getMangi();
   };
 
   const dajChapteryDoSelect = () => {
@@ -134,7 +138,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
             <div className={classes.Url}>
               <InputBase
                 className={classes.UrlInput}
-                placeholder="Url mangi do pobrania"
+                placeholder="Url mangi, dostępne: Mangareader, FanFox"
                 value={url}
                 onChange={onUrlChange}
               />
