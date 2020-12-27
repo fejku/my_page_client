@@ -138,7 +138,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
             <div className={classes.Url}>
               <InputBase
                 className={classes.UrlInput}
-                placeholder="Url mangi, dostępne: Mangareader, FanFox, Taad"
+                placeholder="Dostępne strony: Mangareader, FanFox, Taad, MangaSee123"
                 value={url}
                 onChange={onUrlChange}
               />
