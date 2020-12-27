@@ -118,7 +118,7 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
       url: "",
       dataDodania: "",
       numer: "-",
-      kolejnosc: 0,
+      kolejnosc: -1,
     });
     return chapteryDoSelecta;
   };

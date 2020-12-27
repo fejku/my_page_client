@@ -15,7 +15,7 @@ import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
 import { sleepRand } from "../../Common/CommonHelper";
-import axios from "../../Common/AxiosHelper";
+import myAxios from "../../Common/AxiosHelper";
 
 interface Props {}
 
@@ -30,11 +30,11 @@ const SprawdzanieMangi = (props: Props) => {
   }, []);
 
   const getMangi = async () => {
-    const responseManga = await axios.get(`/apps/sprawdzanie-mangi/manga`);
+    const responseManga = await myAxios.get(`/apps/sprawdzanie-mangi/manga`);
     const dataMangi: IManga[] = responseManga.data;
 
     for (const manga of dataMangi) {
-      const responseChapter = await axios.get(`/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
+      const responseChapter = await myAxios.get(`/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
       const dataChaptery: IChapter[] = responseChapter.data;
       manga.chaptery = dataChaptery;
     }

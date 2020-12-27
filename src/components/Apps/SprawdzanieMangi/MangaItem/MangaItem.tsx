@@ -11,7 +11,7 @@ import SyncIcon from "@material-ui/icons/Sync";
 import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IOdswiezenieMangiWynikDTO";
 import { SnackBarContext } from "../../../../contexts/SnackBarContext";
-import AuthHeader from "../../../../services/AuthHeader";
+import myAxios from "../../../Common/AxiosHelper";
 
 interface Props {
   manga: IManga;
@@ -22,7 +22,7 @@ interface Props {
 const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const snackBarContext = useContext(SnackBarContext);
 
-  const [aktualnyChapter, setAktualnyChapter] = useState(manga.ostatniChapter);
+  const [aktualnyChapter, setAktualnyChapter] = useState(manga.aktualnyChapter);
   const [chaptery, setChaptery] = useState(manga.chaptery);
   const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(manga.ostatnieOdswiezenie);
   const [odswiezanieWTrakcie, setOdswiezanieWTrakcie] = useState(false);
@@ -44,10 +44,14 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   }, [ostatnieOdswiezenie]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (manga.ostatniChapter.localeCompare(aktualnyChapter) !== 0) {
+    if (manga.aktualnyChapter.localeCompare(aktualnyChapter) !== 0) {
       zmienAktualnyChapter();
     }
   }, [aktualnyChapter]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const czyAktualnyChapterNieUstawiony = () => {
+    return aktualnyChapter.localeCompare("-") === 0;
+  };
 
   const czyAktualnyChapterPierwszy = () => {
     return aktualnyChapter.localeCompare(chaptery[0].numer) === 0;
@@ -58,48 +62,50 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const zmienAktualnyChapter = async () => {
-    // const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/`, {
-    //   method: "PUT",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     ...AuthHeader.getAuthHeader(),
-    //   },
-    //   body: JSON.stringify({ ostatniChapter: aktualnyChapter }),
-    // });
-    // const data: IManga = await response.json();
-    // manga.ostatniChapter = data.ostatniChapter;
+    const response = await myAxios.put(`/apps/sprawdzanie-mangi/manga/${manga._id}/`, { aktualnyChapter });
+    const data: IManga = response.data;
+    manga.aktualnyChapter = data.aktualnyChapter;
   };
 
   const dajKolejnoscAktualnegoChaptera = () => {
+    if (aktualnyChapter.localeCompare("-") === 0) {
+      return -1;
+    }
+
     return chaptery.find((chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0)!.kolejnosc;
   };
 
   const odswiezMange = async () => {
-    // setOdswiezanieWTrakcie(true);
-    // const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`, {
-    //   headers: AuthHeader.getAuthHeader(),
-    // });
-    // const data: IOdswiezenieMangiWynikDTO = await response.json();
-    // console.log(data);
-    // setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
-    // setChaptery(data.chaptery);
-    // setOdswiezanieWTrakcie(false);
+    setOdswiezanieWTrakcie(true);
+    const response = await myAxios.get(`/apps/sprawdzanie-mangi/manga/${manga._id}/odswiez`);
+    const data: IOdswiezenieMangiWynikDTO = response.data;
+    console.log(data);
+    setOstatnieOdswiezenie(data.ostatnieOdswiezenie);
+    setChaptery(data.chaptery);
+    setOdswiezanieWTrakcie(false);
   };
 
   const onPrevChapterClick = () => {
     const kolejnoscAktualnegoChaptera = dajKolejnoscAktualnegoChaptera();
 
-    const prevNumer = chaptery.find((chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera - 1)!.numer;
-
-    setAktualnyChapter(prevNumer);
+    if (kolejnoscAktualnegoChaptera === 0) {
+      setAktualnyChapter("-");
+    } else {
+      const prevNumer = chaptery.find((chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera - 1)!.numer;
+      setAktualnyChapter(prevNumer);
+    }
   };
 
   const onNextChapterClick = () => {
     const kolejnoscAktualnegoChaptera = dajKolejnoscAktualnegoChaptera();
 
-    const nextNumer = chaptery.find((chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera + 1)!.numer;
-
-    setAktualnyChapter(nextNumer);
+    if (kolejnoscAktualnegoChaptera === -1) {
+      const nextNumer = chaptery.find((chapter) => chapter.kolejnosc === 0)!.numer;
+      setAktualnyChapter(nextNumer);
+    } else {
+      const nextNumer = chaptery.find((chapter) => chapter.kolejnosc === kolejnoscAktualnegoChaptera + 1)!.numer;
+      setAktualnyChapter(nextNumer);
+    }
   };
 
   const onChapterySelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -111,27 +117,37 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   };
 
   const onCzytajChapterClick = () => {
-    if (czyAktualnyChapterPierwszy() || czyAktualnyChapterOstatni()) {
+    if (czyAktualnyChapterNieUstawiony()) {
+      const urlChapter = chaptery.find((chapter) => chapter.kolejnosc === 0)!.url;
+      window.open(urlChapter, "_blank");
+    } else if (czyAktualnyChapterOstatni()) {
       const urlChapter = chaptery.find((chapter) => chapter.numer.localeCompare(aktualnyChapter) === 0)!.url;
-
       window.open(urlChapter, "_blank");
     } else {
       const kolejnosc = dajKolejnoscAktualnegoChaptera() + 1;
-
       const urlNastepny = chaptery.find((chapter) => chapter.kolejnosc === kolejnosc)!.url;
       window.open(urlNastepny, "_blank");
     }
   };
 
   const onUsunMangaClick = async () => {
-    // const response = await fetch(`${BASE_URL}/apps/sprawdzanie-mangi/manga/${manga._id}`, {
-    //   method: "DELETE",
-    //   headers: AuthHeader.getAuthHeader(),
-    // });
-    // if (response.status === 201) {
-    //   snackBarContext.show(`Usunięto mangę: ${manga.nazwa}`);
-    //   await getMangi();
-    // }
+    const response = await myAxios.delete(`/apps/sprawdzanie-mangi/manga/${manga._id}`);
+    if (response.status === 201) {
+      snackBarContext.show(`Usunięto mangę: ${manga.tytul}`);
+      await getMangi();
+    }
+  };
+
+  const dajChapteryDoSelect = () => {
+    const chapteryDoSelecta = [...chaptery].reverse();
+    chapteryDoSelecta.push({
+      manga: "",
+      url: "",
+      dataDodania: "",
+      numer: "-",
+      kolejnosc: -1,
+    });
+    return chapteryDoSelecta;
   };
 
   return (
@@ -143,12 +159,12 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     >
       <TableCell>
         <Link className={classes.MangaItemLink} href={manga.url} target="_blank" rel="noopener noreferrer">
-          {manga.nazwa}
+          {manga.tytul}
         </Link>
       </TableCell>
       <TableCell>
         <div className={classes.ChapterSelectWrapper}>
-          <IconButton color="primary" disabled={czyAktualnyChapterPierwszy()} onClick={onPrevChapterClick}>
+          <IconButton color="primary" disabled={czyAktualnyChapterNieUstawiony()} onClick={onPrevChapterClick}>
             <RemoveIcon />
           </IconButton>
           <Select
@@ -158,7 +174,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
             value={aktualnyChapter}
             onChange={onChapterySelectChange}
           >
-            {[...chaptery].reverse().map((chapter) => (
+            {dajChapteryDoSelect().map((chapter) => (
               <MenuItem key={chapter._id} className={classes.ChapterSelectItem} value={chapter.numer}>
                 {chapter.numer}
               </MenuItem>
