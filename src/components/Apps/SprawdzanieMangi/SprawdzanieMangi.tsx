@@ -14,7 +14,7 @@ import IManga from "../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
-import { sleepRand } from "../../Common/CommonHelper";
+import { sleep } from "../../Common/CommonHelper";
 import myAxios from "../../Common/AxiosHelper";
 
 interface Props {}
@@ -46,7 +46,7 @@ const SprawdzanieMangi = (props: Props) => {
   const onSprawdzMangiClick = async () => {
     for (const manga of mangi) {
       setOdswiezanaManga(manga._id!);
-      await sleepRand(3000, 10000);
+      await sleep(1000);
     }
   };
 
