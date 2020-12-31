@@ -59,6 +59,7 @@ const SprawdzanieMangi = (props: Props) => {
         <Table className={classes.MangiTable}>
           <TableHead>
             <TableRow>
+              <TableCell className={classes.IconHeader}></TableCell>
               <TableCell>Nazwa</TableCell>
               <TableCell>Ostatni przeczytany</TableCell>
               <TableCell>Najnowszy chapter</TableCell>

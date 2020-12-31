@@ -146,13 +146,21 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     return chapteryDoSelecta;
   };
 
+  const dajIkoneSerwisu(url: string) {
+    
+  }
+
   return (
     <TableRow
       key={manga._id}
       className={clsx(classes.MangaItem, {
         [classes.MangaItemNaBiezaco]: czyAktualnyChapterOstatni(),
+        [classes.MangaNowa]: czyAktualnyChapterNieUstawiony(),
       })}
     >
+      <TableCell>
+        <img src={}></img>
+      </TableCell>
       <TableCell>
         <Link className={classes.MangaItemLink} href={manga.url} target="_blank" rel="noopener noreferrer">
           {manga.tytul}
