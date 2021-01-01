@@ -12,6 +12,7 @@ import IManga from "../../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IOdswiezenieMangiWynikDTO";
 import { SnackBarContext } from "../../../../contexts/SnackBarContext";
 import myAxios from "../../../Common/AxiosHelper";
+import MangaItemIconHelper from "./MangaItemIconHelper";
 
 interface Props {
   manga: IManga;
@@ -146,10 +147,6 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     return chapteryDoSelecta;
   };
 
-  const dajIkoneSerwisu(url: string) {
-    
-  }
-
   return (
     <TableRow
       key={manga._id}
@@ -159,7 +156,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
       })}
     >
       <TableCell>
-        <img src={}></img>
+        <img className={classes.IkonaSerwisu} src={MangaItemIconHelper.dajIkone(manga.url)} alt=""></img>
       </TableCell>
       <TableCell>
         <Link className={classes.MangaItemLink} href={manga.url} target="_blank" rel="noopener noreferrer">
