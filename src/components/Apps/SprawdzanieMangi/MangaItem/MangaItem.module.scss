@@ -51,6 +51,10 @@
   animation: rotate 1.5s linear infinite;
 }
 
+.OdswiezMangeRow {
+  animation: odswiezRowAnimation 0.5s linear infinite alternate;
+}
+
 .IkonaSerwisu {
   width: 24px;
   height: 24px;
@@ -62,5 +66,14 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes odswiezRowAnimation {
+  from {
+    filter: brightness(100%);
+  }
+  to {
+    filter: brightness(80%);
   }
 }

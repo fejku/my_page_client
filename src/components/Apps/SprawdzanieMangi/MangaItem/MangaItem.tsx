@@ -167,6 +167,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
       className={clsx(classes.MangaItem, {
         [classes.MangaItemNaBiezaco]: chaptery && chaptery.length > 0 && czyAktualnyChapterOstatni(),
         [classes.MangaNowa]: chaptery && chaptery.length > 0 && czyAktualnyChapterNieUstawiony(),
+        [classes.OdswiezMangeRow]: odswiezanieWTrakcie,
       })}
     >
       <TableCell>
