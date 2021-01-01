@@ -207,7 +207,16 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
         )}
       </TableCell>
       <TableCell>
-        {chaptery && chaptery.length > 0 ? chaptery[chaptery.length - 1].numer : <div>Ładowanie</div>}
+        {chaptery && chaptery.length > 0 ? (
+          <div>
+            <div>{chaptery[chaptery.length - 1].numer}</div>
+            <div className={classes.DataDodaniaOstatniegoChaptera}>
+              {moment.utc(chaptery[chaptery.length - 1].dataDodania).fromNow()}
+            </div>
+          </div>
+        ) : (
+          <div>Ładowanie</div>
+        )}
       </TableCell>
       <TableCell>{moment.utc(ostatnieOdswiezenie).fromNow()}</TableCell>
       <TableCell>
