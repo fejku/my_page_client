@@ -11,7 +11,6 @@ import {
   TableRow,
 } from "@material-ui/core";
 import IManga from "../../../interfaces/apps/sprawdzanie-mangi/IManga";
-import IChapter from "../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
 import { sleep } from "../../Common/CommonHelper";
@@ -33,14 +32,8 @@ const SprawdzanieMangi = (props: Props) => {
     const responseManga = await myAxios.get(`/apps/sprawdzanie-mangi/manga`);
     const dataMangi: IManga[] = responseManga.data;
 
-    for (const manga of dataMangi) {
-      const responseChapter = await myAxios.get(`/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
-      const dataChaptery: IChapter[] = responseChapter.data;
-      manga.chaptery = dataChaptery;
-    }
-
-    setLoading(false);
     setMangi(dataMangi);
+    setLoading(false);
   };
 
   const onSprawdzMangiClick = async () => {

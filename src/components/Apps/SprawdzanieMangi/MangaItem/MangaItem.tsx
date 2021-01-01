@@ -13,6 +13,7 @@ import IOdswiezenieMangiWynikDTO from "../../../../interfaces/apps/sprawdzanie-m
 import { SnackBarContext } from "../../../../contexts/SnackBarContext";
 import myAxios from "../../../Common/AxiosHelper";
 import MangaItemIconHelper from "./MangaItemIconHelper";
+import IChapter from "../../../../interfaces/apps/sprawdzanie-mangi/IChapter";
 
 interface Props {
   manga: IManga;
@@ -24,9 +25,31 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const snackBarContext = useContext(SnackBarContext);
 
   const [aktualnyChapter, setAktualnyChapter] = useState(manga.aktualnyChapter);
-  const [chaptery, setChaptery] = useState(manga.chaptery);
+  const [chaptery, setChaptery] = useState<IChapter[]>([]);
+  const [chapteryDoSelecta, setChapteryDoSelecta] = useState<IChapter[]>([]);
   const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(manga.ostatnieOdswiezenie);
   const [odswiezanieWTrakcie, setOdswiezanieWTrakcie] = useState(false);
+
+  useEffect(() => {
+    if (manga._id) {
+      getChaptery(manga._id);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (chaptery && chaptery.length > 0) {
+      const chapteryPom = [...chaptery].reverse();
+      chapteryPom.push({
+        manga: "",
+        url: "",
+        dataDodania: "",
+        numer: "-",
+        kolejnosc: -1,
+      });
+
+      setChapteryDoSelecta(chapteryPom);
+    }
+  }, [chaptery]);
 
   useEffect(() => {
     if (manga && manga._id) {
@@ -37,10 +60,6 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   }, [odswiezanaManga]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    manga.chaptery = chaptery;
-  }, [chaptery]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     manga.ostatnieOdswiezenie = ostatnieOdswiezenie;
   }, [ostatnieOdswiezenie]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -49,6 +68,13 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
       zmienAktualnyChapter();
     }
   }, [aktualnyChapter]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const getChaptery = async (mangaId: string) => {
+    const responseChapter = await myAxios.get(`/apps/sprawdzanie-mangi/manga/${manga._id}/chaptery`);
+    const dataChaptery: IChapter[] = responseChapter.data;
+
+    setChaptery(dataChaptery);
+  };
 
   const czyAktualnyChapterNieUstawiony = () => {
     return aktualnyChapter.localeCompare("-") === 0;
@@ -135,24 +161,12 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     }
   };
 
-  const dajChapteryDoSelect = () => {
-    const chapteryDoSelecta = [...chaptery].reverse();
-    chapteryDoSelecta.push({
-      manga: "",
-      url: "",
-      dataDodania: "",
-      numer: "-",
-      kolejnosc: -1,
-    });
-    return chapteryDoSelecta;
-  };
-
   return (
     <TableRow
       key={manga._id}
       className={clsx(classes.MangaItem, {
-        [classes.MangaItemNaBiezaco]: czyAktualnyChapterOstatni(),
-        [classes.MangaNowa]: czyAktualnyChapterNieUstawiony(),
+        [classes.MangaItemNaBiezaco]: chaptery && chaptery.length > 0 && czyAktualnyChapterOstatni(),
+        [classes.MangaNowa]: chaptery && chaptery.length > 0 && czyAktualnyChapterNieUstawiony(),
       })}
     >
       <TableCell>
@@ -164,29 +178,36 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
         </Link>
       </TableCell>
       <TableCell>
-        <div className={classes.ChapterSelectWrapper}>
-          <IconButton color="primary" disabled={czyAktualnyChapterNieUstawiony()} onClick={onPrevChapterClick}>
-            <RemoveIcon />
-          </IconButton>
-          <Select
-            className={classes.ChapterSelect}
-            variant="outlined"
-            margin="dense"
-            value={aktualnyChapter}
-            onChange={onChapterySelectChange}
-          >
-            {dajChapteryDoSelect().map((chapter) => (
-              <MenuItem key={chapter._id} className={classes.ChapterSelectItem} value={chapter.numer}>
-                {chapter.numer}
-              </MenuItem>
-            ))}
-          </Select>
-          <IconButton color="primary" disabled={czyAktualnyChapterOstatni()} onClick={onNextChapterClick}>
-            <AddIcon />
-          </IconButton>
-        </div>
+        {chapteryDoSelecta && chapteryDoSelecta.length > 0 ? (
+          <div className={classes.ChapterSelectWrapper}>
+            <IconButton color="primary" disabled={czyAktualnyChapterNieUstawiony()} onClick={onPrevChapterClick}>
+              <RemoveIcon />
+            </IconButton>
+
+            <Select
+              className={classes.ChapterSelect}
+              variant="outlined"
+              margin="dense"
+              value={aktualnyChapter}
+              onChange={onChapterySelectChange}
+            >
+              {chapteryDoSelecta.map((chapter) => (
+                <MenuItem key={chapter.kolejnosc} className={classes.ChapterSelectItem} value={chapter.numer}>
+                  {chapter.numer}
+                </MenuItem>
+              ))}
+            </Select>
+            <IconButton color="primary" disabled={czyAktualnyChapterOstatni()} onClick={onNextChapterClick}>
+              <AddIcon />
+            </IconButton>
+          </div>
+        ) : (
+          <div>Ładowanie</div>
+        )}
       </TableCell>
-      <TableCell>{chaptery[chaptery.length - 1].numer}</TableCell>
+      <TableCell>
+        {chaptery && chaptery.length > 0 ? chaptery[chaptery.length - 1].numer : <div>Ładowanie</div>}
+      </TableCell>
       <TableCell>{moment.utc(ostatnieOdswiezenie).fromNow()}</TableCell>
       <TableCell>
         <div className={classes.MangaAkcje}>
