@@ -9,14 +9,13 @@ import IRegisterUser from "../interfaces/IRegisterUser";
 class AuthService {
   public static login = async (user: ILoginUser): Promise<ILoginResult> => {
     const response = await myAxios.post(`/auth/login`, user);
-    if (response.status !== 401) {
-      const data: ILoginResponse = response.data;
-
+    const data: ILoginResponse = response.data;
+    if (data.status && data.status.localeCompare("error") === 0) {
+      return { isAuthenticated: false };
+    } else {
       localStorage.setItem("user", JSON.stringify(data));
 
       return data;
-    } else {
-      return { isAuthenticated: false };
     }
   };
 
@@ -37,9 +36,8 @@ class AuthService {
 
   public static isAuthenticated = async () => {
     const response = await myAxios.get(`/auth/authenticated`);
-    if (response.status !== 401) {
-      return response.data;
-    } else {
+    const data = response.data;
+    if (data.status && data.status.localeCompare("error") === 0) {
       return {
         isAuthenticated: false,
         user: {
@@ -47,6 +45,8 @@ class AuthService {
           role: "",
         },
       };
+    } else {
+      return response.data;
     }
   };
 }

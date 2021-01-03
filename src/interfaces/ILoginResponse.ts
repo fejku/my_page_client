@@ -5,6 +5,7 @@ interface ILoginResponse {
     role: string;
   };
   accessToken: string;
+  status?: string;
 }
 
 export default ILoginResponse;
