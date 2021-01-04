@@ -161,6 +161,17 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
     }
   };
 
+  const dajDataDodaniaOstatniegoChaptera = (dataDodania: string) => {
+    // 07/20/2020
+    // Mar 01,2016
+    // September 29, 2020
+    // 2019-02-26
+    const allowedDateFormats = ["MM/DD/YYYY", "MMM DD,YYYY", "MMMM D, YYYY", "YYYY-MM-DD"];
+    const dataDodaniaOstatniegoChaptera = moment(dataDodania.trim(), allowedDateFormats, "en", true);
+    dataDodaniaOstatniegoChaptera.locale("pl");
+    return moment.utc(dataDodaniaOstatniegoChaptera).fromNow();
+  };
+
   return (
     <TableRow
       key={manga._id}
@@ -211,7 +222,7 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
           <div>
             <div>{chaptery[chaptery.length - 1].numer}</div>
             <div className={classes.DataDodaniaOstatniegoChaptera}>
-              {moment.utc(chaptery[chaptery.length - 1].dataDodania).fromNow()}
+              {dajDataDodaniaOstatniegoChaptera(chaptery[chaptery.length - 1].dataDodania)}
             </div>
           </div>
         ) : (

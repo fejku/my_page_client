@@ -30,29 +30,24 @@ const SprawdzanieMangi = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    // if (pMangi && pMangi.length > 0) {
-    setPosortowaneMangi(
-      [...mangi].sort((a, b) => {
-        // Zaczęte mangi pierwsze
-        if (("" + a.aktualnyChapter).localeCompare("-") !== 0 && ("" + b.aktualnyChapter).localeCompare("-") !== 0) {
-          // Mangi nie na bieżąco na początku
-          if (
-            b.aktualnyChapter.localeCompare(b.najnowszyChapter) -
-              a.aktualnyChapter.localeCompare(a.najnowszyChapter) ===
-            0
-          ) {
-            // Sortowanie po nazwie
-            return ("" + a.tytul).localeCompare(b.tytul);
-          }
-          return (
-            b.aktualnyChapter.localeCompare(b.najnowszyChapter) - a.aktualnyChapter.localeCompare(a.najnowszyChapter)
-          );
-        }
-        return ("" + b.aktualnyChapter).localeCompare(a.aktualnyChapter);
-      })
-    );
-    // }
+    const mangiCzytaneNowyChapter = mangi
+      .filter(
+        (m) => m.aktualnyChapter.localeCompare(m.najnowszyChapter) !== 0 && m.aktualnyChapter.localeCompare("-") !== 0
+      )
+      .sort(sortowanieMangiTytul);
+    const mangiCzytaneNaBiezaco = mangi
+      .filter(
+        (m) => m.aktualnyChapter.localeCompare(m.najnowszyChapter) === 0 && m.aktualnyChapter.localeCompare("-") !== 0
+      )
+      .sort(sortowanieMangiTytul);
+    const mangiNieZaczete = mangi.filter((m) => m.aktualnyChapter.localeCompare("-") === 0).sort(sortowanieMangiTytul);
+
+    setPosortowaneMangi([...mangiCzytaneNowyChapter, ...mangiCzytaneNaBiezaco, ...mangiNieZaczete]);
   }, [mangi]);
+
+  const sortowanieMangiTytul = (a: IMangaWynikDTO, b: IMangaWynikDTO) => {
+    return a.tytul.localeCompare(b.tytul);
+  };
 
   const getMangi = async () => {
     const responseManga = await myAxios.get(`/apps/sprawdzanie-mangi/manga`);
@@ -63,7 +58,7 @@ const SprawdzanieMangi = (props: Props) => {
   };
 
   const onSprawdzMangiClick = async () => {
-    for (const manga of mangi) {
+    for (const manga of posortowaneMangi) {
       setOdswiezanaManga(manga._id!);
       await sleep(1000);
     }
