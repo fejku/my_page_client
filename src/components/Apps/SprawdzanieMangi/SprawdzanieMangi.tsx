@@ -10,17 +10,18 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import IManga from "../../../interfaces/apps/sprawdzanie-mangi/IManga";
 import DodajMange from "./DodajMange/DodajMange";
 import MangaItem from "./MangaItem/MangaItem";
 import { sleep } from "../../Common/CommonHelper";
 import myAxios from "../../Common/AxiosHelper";
+import IMangaWynikDTO from "../../../interfaces/apps/sprawdzanie-mangi/IMangaWynikDTO";
 
 interface Props {}
 
 const SprawdzanieMangi = (props: Props) => {
   const [loading, setLoading] = useState(true);
-  const [mangi, setMangi] = useState<IManga[]>([]);
+  const [mangi, setMangi] = useState<IMangaWynikDTO[]>([]);
+  const [posortowaneMangi, setPosortowaneMangi] = useState<IMangaWynikDTO[]>([]);
   const [dodawanieMangi, setDodawanieMangi] = useState(false);
   const [odswiezanaManga, setOdswiezanaManga] = useState("");
 
@@ -28,9 +29,34 @@ const SprawdzanieMangi = (props: Props) => {
     getMangi();
   }, []);
 
+  useEffect(() => {
+    // if (pMangi && pMangi.length > 0) {
+    setPosortowaneMangi(
+      [...mangi].sort((a, b) => {
+        // Zaczęte mangi pierwsze
+        if (("" + a.aktualnyChapter).localeCompare("-") !== 0 && ("" + b.aktualnyChapter).localeCompare("-") !== 0) {
+          // Mangi nie na bieżąco na początku
+          if (
+            b.aktualnyChapter.localeCompare(b.najnowszyChapter) -
+              a.aktualnyChapter.localeCompare(a.najnowszyChapter) ===
+            0
+          ) {
+            // Sortowanie po nazwie
+            return ("" + a.tytul).localeCompare(b.tytul);
+          }
+          return (
+            b.aktualnyChapter.localeCompare(b.najnowszyChapter) - a.aktualnyChapter.localeCompare(a.najnowszyChapter)
+          );
+        }
+        return ("" + b.aktualnyChapter).localeCompare(a.aktualnyChapter);
+      })
+    );
+    // }
+  }, [mangi]);
+
   const getMangi = async () => {
     const responseManga = await myAxios.get(`/apps/sprawdzanie-mangi/manga`);
-    const dataMangi: IManga[] = responseManga.data;
+    const dataMangi: IMangaWynikDTO[] = responseManga.data;
 
     setMangi(dataMangi);
     setLoading(false);
@@ -61,7 +87,7 @@ const SprawdzanieMangi = (props: Props) => {
             </TableRow>
           </TableHead>
           <TableBody className={classes.Test}>
-            {mangi.map((manga) => (
+            {posortowaneMangi.map((manga) => (
               <MangaItem key={manga._id} manga={manga} getMangi={getMangi} odswiezanaManga={odswiezanaManga} />
             ))}
           </TableBody>
