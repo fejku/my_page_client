@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 import moment from "moment";
 import classes from "./MangaItem.module.scss";
-import { IconButton, Link, MenuItem, Select, TableCell, TableRow } from "@material-ui/core";
+import { IconButton, Link, MenuItem, Select, TableCell, TableRow, Tooltip } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -29,11 +29,18 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
   const [chapteryDoSelecta, setChapteryDoSelecta] = useState<IChapter[]>([]);
   const [ostatnieOdswiezenie, setOstatnieOdswiezenie] = useState(manga.ostatnieOdswiezenie);
   const [odswiezanieWTrakcie, setOdswiezanieWTrakcie] = useState(false);
+  const [mangaSiteIkona, setMangaSiteIkona] = useState("");
+  const [mangaSiteNazwa, setMangaSiteNazwa] = useState("");
 
   useEffect(() => {
     if (manga._id) {
       getChaptery(manga._id);
     }
+
+    const mangaSite = MangaItemIconHelper.dajStrone(manga.url);
+
+    setMangaSiteIkona(mangaSite.ikona);
+    setMangaSiteNazwa(mangaSite.nazwa);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -182,7 +189,9 @@ const MangaItem: React.FC<Props> = ({ manga, getMangi, odswiezanaManga }) => {
       })}
     >
       <TableCell>
-        <img className={classes.IkonaSerwisu} src={MangaItemIconHelper.dajIkone(manga.url)} alt=""></img>
+        <Tooltip title={mangaSiteNazwa}>
+          <img className={classes.IkonaSerwisu} src={mangaSiteIkona} alt={mangaSiteNazwa} />
+        </Tooltip>
       </TableCell>
       <TableCell>
         <Link className={classes.MangaItemLink} href={manga.url} target="_blank" rel="noopener noreferrer">

@@ -12,6 +12,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Tooltip,
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import DodajButton from "../../../Common/DodajButton/DodajButton";
@@ -24,6 +25,7 @@ import IPobieranieMangiWynikDTO, {
   IPobieranieMangiWynikDTOChapter,
 } from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieMangiWynikDTO";
 import IPobieranieMangiKryteriaDTO from "../../../../interfaces/apps/sprawdzanie-mangi/IPobieranieMangiKryteriaDTO";
+import { mangaSiteList } from "../Common/MangaSite";
 
 interface Props {
   dodawanieState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
@@ -134,11 +136,21 @@ const DodajMange: React.FC<Props> = ({ dodawanieState: [dodawanieMangi, setDodaw
         <DialogTitle>Dodawanie mangi</DialogTitle>
         <DialogContent dividers>
           <div className={classes.Wrapper}>
+            <span className={classes.Label}>Strony</span>
+            <div className={classes.IkonySerwisow}>
+              {mangaSiteList.map((mangaSite) => (
+                <Tooltip title={mangaSite.nazwa}>
+                  <img className={classes.IkonaSerwisu} src={mangaSite.ikona} alt={mangaSite.nazwa} />
+                </Tooltip>
+              ))}
+            </div>
+          </div>
+          <div className={classes.Wrapper}>
             <span className={classes.Label}>Url</span>
             <div className={classes.Url}>
               <InputBase
                 className={classes.UrlInput}
-                placeholder="Dostępne strony: Mangareader, FanFox, Taad, MangaSee123"
+                placeholder={`URL np: "https://mangasee123.com/manga/Kill-The-Hero"`}
                 value={url}
                 onChange={onUrlChange}
               />
