@@ -1,21 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
+import "./index.css";
 import { StylesProvider } from "@material-ui/core/styles";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthProvider } from "./contexts/AuthContext";
 import { SnackBarProvider } from "./contexts/SnackBarContext";
-import "./index.css";
+
+const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthProvider>
-      <SnackBarProvider>
-        <StylesProvider injectFirst>
-          <App />
-        </StylesProvider>
-      </SnackBarProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <SnackBarProvider>
+          <StylesProvider injectFirst>
+            <App />
+          </StylesProvider>
+        </SnackBarProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
