@@ -1,5 +1,6 @@
 import IApp from "../../interfaces/IApp";
 import Potrawy from "./Potrawy/Potrawy";
+import Published from "./Published/Published";
 import SprawdzanieMangi from "./SprawdzanieMangi/SprawdzanieMangi";
 
 export const appList: IApp[] = [
@@ -40,8 +41,14 @@ export const appList: IApp[] = [
     // "Sprawdzanie czy wyszłedł nowy chapter"
     tytul: "Sprawdzanie mangi",
     link: "sprawdzanie-mangi",
-    image:
-      "https://aikido.waw.pl/wp-content/uploads/2019/08/turn-pen-976930_1280.jpg",
+    image: "https://aikido.waw.pl/wp-content/uploads/2019/08/turn-pen-976930_1280.jpg",
     component: SprawdzanieMangi,
+  },
+  {
+    // "Sprawdzanie czy wyszłedł nowy chapter"
+    tytul: "Opublikowane",
+    link: "published",
+    image: "https://aikido.waw.pl/wp-content/uploads/2019/08/turn-pen-976930_1280.jpg",
+    component: Published,
   },
 ];

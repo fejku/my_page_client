@@ -12,12 +12,12 @@ const Published = (props: Props) => {
   const [abandonedList, setAbandonedList] = useState([]);
 
   useEffect(() => {
-    setPublished();
+    // setPublished();
   }, []);
 
   const getPublished = async () => {
-    const responsePublished = await myAxios.get(`/apps/published/published`);
-    const dataPublished: any = responsePublished.data;
+    // const responsePublished = await myAxios.get(`/apps/published/published`);
+    // const dataPublished: any = responsePublished.data;
   };
 
   const setPublished = async () => {
@@ -30,9 +30,9 @@ const Published = (props: Props) => {
     fetch("https://jsonplaceholder.typicode.com/todos/1").then((res) => res.json())
   );
 
-  if (isLoading) return "Loading...";
+  if (isLoading) return <div>{"Loading..."}</div>;
 
-  if (error) return "An error has occurred: "; // + error.message;
+  if (error) return <div>{"An error has occurred: "}</div>; // + error.message;
 
   return (
     <div>
